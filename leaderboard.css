@@ -1,0 +1,230 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+:root {
+  --card: #0f1b47;
+  --border: #1f3a8a;
+  --blue: #1d8cf8;
+  --cyan: #22d3ee;
+  --yellow: #facc15;
+  --text: #ffffff;
+  --muted: #9fb0d9;
+}
+
+body {
+  background: linear-gradient(180deg, #060c24, #0a1233);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+/* Header */
+.header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 8px 4px 14px;
+}
+
+.back-btn {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 24px;
+}
+
+.header h1 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+/* Period Tabs */
+.period-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.period-tabs {
+  display: flex;
+  flex: 1;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 3px;
+}
+
+.tab {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 14px;
+  padding: 9px 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.tab.active {
+  background: #0b5fd6;
+  border: 1px solid var(--cyan);
+  box-shadow: 0 0 8px rgba(34, 211, 238, 0.5);
+  font-weight: 700;
+}
+
+.calendar-btn {
+  width: 42px;
+  height: 42px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Top Tabs */
+.top-tabs {
+  display: flex;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 3px;
+  margin-bottom: 10px;
+}
+
+.top-tab {
+  flex: 1;
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 14px;
+  padding: 10px 0;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.top-tab.active {
+  background: var(--blue);
+  font-weight: 700;
+}
+
+/* Columns (head + rows share these) */
+.c-rank   { width: 44px; text-align: center; flex-shrink: 0; }
+.c-player { flex: 1; display: flex; align-items: center; gap: 8px; min-width: 0; }
+.c-points { width: 72px; text-align: center; flex-shrink: 0; }
+.c-reward { width: 84px; text-align: right; flex-shrink: 0; }
+
+/* Table Head */
+.table-head {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--muted);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 8px;
+}
+
+.table-head .c-player { display: block; padding-left: 52px; }
+
+/* List */
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.row .c-rank {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.row .c-player {
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.row .c-reward {
+  color: var(--yellow);
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #1e3a8a;
+  border: 2px solid var(--cyan);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-style: normal;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+/* Top 3 highlight */
+.crown { font-size: 22px; }
+
+.row.gold   { border-color: #facc15; box-shadow: 0 0 8px rgba(250, 204, 21, 0.35); }
+.row.silver { border-color: #cbd5e1; box-shadow: 0 0 8px rgba(203, 213, 225, 0.3); }
+.row.bronze { border-color: #f97316; box-shadow: 0 0 8px rgba(249, 115, 22, 0.35); }
+
+.row.silver .crown { filter: grayscale(1) brightness(1.6); }
+.row.bronze .crown { filter: hue-rotate(-20deg) saturate(1.5); }
+
+/* Bottom Nav (home.css se same) */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  background: #070e2b;
+  border-top: 1px solid var(--border);
+  padding: 8px 4px;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 10px;
+}
+
+.nav-item .icon { font-size: 20px; }
+
+.nav-item.active {
+  color: var(--yellow);
+  border: 1px solid var(--yellow);
+}

@@ -1,0 +1,237 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+:root {
+  --card: #0f1b47;
+  --border: #1f3a8a;
+  --cyan: #22d3ee;
+  --yellow: #facc15;
+  --text: #ffffff;
+  --muted: #9fb0d9;
+}
+
+body {
+  background: linear-gradient(180deg, #060c24, #0a1233);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 80px;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+/* Top Bar */
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px 12px;
+  margin-bottom: 14px;
+}
+
+.menu-btn,
+.bell-btn {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  line-height: 1;
+}
+
+.crown { font-size: 14px; }
+
+.logo-text {
+  font-weight: 800;
+  font-size: 16px;
+  letter-spacing: 1px;
+}
+
+.user {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 10px;
+  border-left: 1px solid var(--border);
+}
+
+.avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 2px solid var(--cyan);
+  background: #1e3a8a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 12px;
+}
+
+.user-name { font-weight: 700; }
+.user-id { color: var(--muted); font-size: 11px; }
+
+/* Title Row */
+.title-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.pad { font-size: 36px; }
+
+.title-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.title-text h2 { font-size: 20px; }
+.title-text span { font-size: 11px; color: var(--muted); }
+
+.today-btn {
+  color: var(--text);
+  text-decoration: none;
+  font-size: 12px;
+  border: 1px solid var(--cyan);
+  border-radius: 10px;
+  padding: 8px 10px;
+  white-space: nowrap;
+}
+
+/* Game Cards */
+.games {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.game-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 10px;
+}
+
+.thumb {
+  position: relative;
+  width: 84px;
+  height: 84px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.thumb .emoji { font-size: 40px; }
+
+.t1 { background: linear-gradient(135deg, #6d28d9, #2563eb); }
+.t2 { background: linear-gradient(135deg, #0ea5e9, #22c55e); }
+.t3 { background: linear-gradient(135deg, #7c3aed, #4f46e5); }
+.t4 { background: linear-gradient(135deg, #1e3a8a, #7c3aed); }
+.t5 { background: linear-gradient(135deg, #9333ea, #db2777); }
+
+.badge {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--yellow);
+  color: #222;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 3px 7px;
+  border-radius: 10px 0 10px 0;
+}
+
+.game-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.game-body h3 {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.game-body p {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.play-btn {
+  background: var(--yellow);
+  color: #222;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-weight: 800;
+  font-size: 13px;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.play-btn:active { transform: scale(0.96); }
+
+/* Bottom Nav */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  background: #070e2b;
+  border-top: 1px solid var(--border);
+  padding: 8px 4px;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 10px;
+}
+
+.nav-item .icon { font-size: 20px; }
+
+.nav-item.active {
+  color: var(--yellow);
+  border: 1px solid var(--yellow);
+}
