@@ -1,0 +1,219 @@
+:root {
+    --bg-dark: #030712;
+    --primary-blue: #2563eb;
+    --neon-blue: #38bdf8;
+    --gold-glow: #facc15;
+    --gold-dark: #ca8a04;
+    --card-bg: rgba(15, 23, 42, 0.75);
+    --border-color: rgba(56, 189, 248, 0.25);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: #030712;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ffffff;
+}
+
+/* App Main Container (Outer Border Removed) */
+.app-card {
+    width: 100%;
+    max-width: 400px;
+    min-height: 100vh;
+    background: radial-gradient(circle at 50% 25%, #0b1a3e 0%, #030712 80%);
+    border: none; /* Red circle waala border hata diya */
+    border-radius: 0; /* Outer round corners hata diye */
+    padding: 30px 20px 20px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: none; /* Outer box shadow removed */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Header Section */
+.hero-header {
+    text-align: center;
+    margin-top: 10px;
+    position: relative;
+    z-index: 2;
+}
+
+.logo-box .logo-text {
+    font-family: 'Teko', sans-serif;
+    font-size: 50px;
+    line-height: 0.9;
+    letter-spacing: 2px;
+    background: linear-gradient(180deg, #ffffff 30%, #cbd5e1 70%, #64748b 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.8));
+}
+
+.subtitle {
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--gold-glow);
+    letter-spacing: 2.5px;
+    margin-top: 4px;
+}
+
+/* Controller Graphic Banner */
+.controller-stage {
+    position: relative;
+    margin: 20px 0 10px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+.aura-glow {
+    position: absolute;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.35) 0%, rgba(37, 99, 235, 0.1) 60%, transparent 80%);
+    border-radius: 50%;
+    animation: pulseGlow 3s infinite alternate;
+}
+
+@keyframes pulseGlow {
+    0% { transform: scale(0.9); opacity: 0.6; }
+    100% { transform: scale(1.15); opacity: 1; }
+}
+
+.gamepad-card {
+    position: relative;
+    z-index: 2;
+}
+
+.controller-icon {
+    font-size: 90px;
+    color: #3b82f6;
+    filter: drop-shadow(0 0 20px #2563eb) drop-shadow(0 0 35px #1d4ed8);
+}
+
+/* Tagline */
+.tagline-container {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.hindi-headline {
+    font-size: 18px;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.5px;
+}
+
+.hindi-subhead {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--gold-glow);
+    text-shadow: 0 0 12px rgba(250, 204, 21, 0.4);
+}
+
+/* Feature Cards Grid */
+.features-row {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 2;
+}
+
+.feature-item {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    backdrop-filter: blur(8px);
+    border-radius: 12px;
+    padding: 10px 4px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.icon-wrap i {
+    font-size: 18px;
+    color: var(--neon-blue);
+    margin-bottom: 6px;
+    filter: drop-shadow(0 0 6px var(--neon-blue));
+}
+
+.feature-item span {
+    font-size: 8.5px;
+    font-weight: 600;
+    color: #e2e8f0;
+    line-height: 1.15;
+}
+
+/* Buttons */
+.cta-group {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 2;
+}
+
+.btn-signup {
+    width: 100%;
+    padding: 13px 0;
+    border-radius: 12px;
+    background: linear-gradient(180deg, #fef08a 0%, #facc15 40%, var(--gold-dark) 100%);
+    border: none;
+    color: #0b0f19;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    box-shadow: 0 6px 20px rgba(234, 179, 8, 0.35);
+}
+
+.btn-login {
+    width: 100%;
+    padding: 12px 0;
+    border-radius: 12px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1.5px solid #3b82f6;
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+}
+
+/* Footer Section */
+.footer-bar {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: #94a3b8;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    position: relative;
+    z-index: 2;
+}
+
+.dot {
+    color: #3b82f6;
+    font-size: 8px;
+}
