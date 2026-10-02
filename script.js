@@ -66,3 +66,7 @@ if (logoutBtn) {
     window.location.href = 'login.html';
   });
 }
+// home.html wale saare links ko index.html par bhejo (home page ka naam index.html hai)
+document.querySelectorAll('a[href="home.html"]').forEach(function (a) {
+  a.setAttribute('href', 'index.html');
+});
