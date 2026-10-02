@@ -18,9 +18,9 @@
 
     <!-- Profile -->
     <section class="profile">
-      <div class="profile-avatar">🧑</div>
+  <div class="profile-avatar" id="profileAvatar">🧑</div>
       <div class="profile-info">
-        <span class="p-name">Nilesh Raj</span>
+      <span class="p-name" id="profileName">Nilesh Raj</span>
         <span class="p-id">ID: 785432</span>
         <span class="p-level">Level 3</span>
         <div class="xp-row">
@@ -112,6 +112,12 @@
     </a>
   </nav>
 
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
   <script src="script.js"></script>
+  <script src="profile.js"></script>
+  <input type="file" id="photoInput" accept="image/*" hidden>
 </body>
 </html>
