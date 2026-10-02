@@ -30,10 +30,10 @@
       </div>
       <button class="bell-btn" id="bellBtn">🔔</button>
       <div class="user">
-        <img class="avatar" src="avatar.png" alt="User">
+        <img class="avatar" id="homeAvatar" alt="User">
         <div class="user-info">
-          <span class="user-name">Nilesh Raj</span>
-          <span class="user-id">ID: 785432</span>
+    <span class="user-name" id="homeName">...</span>
+          <span class="user-id" id="homeId">ID: ------</span>
         </div>
       </div>
     </header>
@@ -123,7 +123,12 @@
       <span>More</span>
     </a>
   </nav>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<script src="firebase-config.js"></script>
 <script src="script.js"></script>
+<script src="home.js"></script>
   
 </body>
 </html>

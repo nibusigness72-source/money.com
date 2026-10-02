@@ -24,6 +24,7 @@ firebase.auth().onAuthStateChanged(function (user) {
     var data = snap.val() || {};
     if (data.name) nameEl.textContent = data.name;
     if (data.photo) showPhoto(data.photo);
+    document.getElementById('profileId').textContent = data.playerId ? 'ID: ' + data.playerId : 'ID: ------';
 
     // Phone number bhi save karo, taaki pata chale ye kiska account hai
     if (!data.phone && user.phoneNumber) {
@@ -55,14 +56,7 @@ nameEl.addEventListener('click', function () {
     .catch(function () { alert('Save nahi hua, dobara try karo'); });
 });
 
-// Photo par click: gallery khulegi
-avatarEl.addEventListener('click', function () {
-  if (!currentUser) {
-    alert('Pehle login karo');
-    return;
-  }
-  photoInput.click();
-});
+
 
 // Photo ko chhota (150x150) karke text bana do
 function resizeImage(file, size, done) {
@@ -90,7 +84,14 @@ function resizeImage(file, size, done) {
 
 photoInput.addEventListener('change', function () {
   var file = photoInput.files[0];
-  if (!file || !currentUser) return;
+
+
+  if (!file) return;
+  if (!currentUser) {
+    alert('Pehle login karo');
+    photoInput.value = '';
+    return;
+  }
 
   if (file.type.indexOf('image/') !== 0) {
     alert('Sirf photo chuno');

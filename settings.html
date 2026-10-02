@@ -18,10 +18,10 @@
 
     <!-- Profile -->
     <section class="profile">
-  <div class="profile-avatar" id="profileAvatar">🧑</div>
+  <label class="profile-avatar" id="profileAvatar" for="photoInput">🧑</label>
       <div class="profile-info">
       <span class="p-name" id="profileName">Nilesh Raj</span>
-        <span class="p-id">ID: 785432</span>
+      <span class="p-id" id="profileId">ID: ------</span>
         <span class="p-level">Level 3</span>
         <div class="xp-row">
           <div class="xp-bar"><div class="xp-fill"></div></div>
@@ -29,6 +29,8 @@
         </div>
       </div>
     </section>
+
+    <input type="file" id="photoInput" accept="image/*" hidden>
 
     <!-- Wallet -->
     <section class="wallet-card">
@@ -49,7 +51,7 @@
 
     <!-- Menu List -->
     <section class="menu">
-      <a href="#" class="menu-item">
+      <a href="#" class="men,u-item">
         <span class="m-icon">🔔</span>
         <span class="m-text">Game Rules</span>
         <span class="arrow">›</span>
