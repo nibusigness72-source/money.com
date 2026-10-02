@@ -54,3 +54,15 @@ document.querySelectorAll('.play-btn').forEach(function (btn) {
     // window.location.href = game + '.html';
   });
 });
+// Log Out: login status hatao aur login page par bhejo
+var logoutBtn = document.getElementById('logoutBtn');
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', function (e) {
+    e.preventDefault();
+    try {
+      localStorage.removeItem('loggedIn');
+      localStorage.removeItem('phone');
+    } catch (err) {}
+    window.location.href = 'login.html';
+  });
+}

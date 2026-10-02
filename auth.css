@@ -1,0 +1,302 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', Arial, sans-serif;
+}
+
+:root {
+  --card: rgba(8, 22, 66, 0.75);
+  --border: #1f4fd8;
+  --cyan: #22b8ff;
+  --yellow: #facc15;
+  --text: #ffffff;
+  --muted: #9fb0d9;
+}
+
+body {
+  background: #040b24;
+  color: var(--text);
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.app-card {
+  position: relative;
+  max-width: 480px;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0 auto;
+  padding: 16px 16px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 85% 0%, rgba(29, 123, 255, 0.35), transparent 45%),
+    linear-gradient(180deg, #050d2e, #040b24);
+}
+
+/* Back + controller */
+.back-btn {
+  position: absolute;
+  top: 18px;
+  left: 16px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: rgba(8, 22, 66, 0.8);
+  color: var(--text);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  z-index: 2;
+}
+
+.top-pad {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 54px;
+  color: #2b7bff;
+  transform: rotate(15deg);
+  filter: drop-shadow(0 0 14px rgba(43, 123, 255, 0.8));
+}
+
+/* Brand */
+.brand {
+  text-align: center;
+  padding-top: 6px;
+  margin-bottom: 0;
+}
+
+.crown {
+  font-size: 30px;
+  color: var(--yellow);
+  filter: drop-shadow(0 0 10px rgba(250, 204, 21, 0.7));
+}
+
+.logo-text {
+  font-size: 40px;
+  font-weight: 900;
+  line-height: 1.1;
+  background: linear-gradient(180deg, #ffffff, #a9b8e6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  margin-top: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--yellow);
+}
+
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 18px 16px;
+  margin-bottom: 0;
+  box-shadow: 0 0 18px rgba(31, 79, 216, 0.25);
+}
+
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+
+.head-icon {
+  font-size: 26px;
+  color: var(--cyan);
+  margin-top: 2px;
+}
+
+.card-head h2 {
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.card-head p {
+  font-size: 12px;
+  color: #b9d3ff;
+  line-height: 1.5;
+}
+
+.card-head .sent-to {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+/* Phone */
+.phone-box {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #030a22;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  padding: 0 14px;
+  height: 56px;
+  margin-bottom: 16px;
+}
+
+.flag { font-size: 24px; }
+.code { font-size: 18px; font-weight: 600; }
+
+.sep {
+  width: 2px;
+  height: 22px;
+  background: var(--border);
+}
+
+.phone-box input {
+  flex: 1;
+  min-width: 0;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 18px;
+  letter-spacing: 1px;
+}
+
+.phone-box input::placeholder { color: #5b6a99; }
+
+/* Button */
+.btn-yellow {
+  width: 100%;
+  height: 54px;
+  border: none;
+  border-radius: 14px;
+  background: linear-gradient(180deg, #ffe14d, #f4b400);
+  color: #1b1b1b;
+  font-size: 20px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 0 16px rgba(250, 204, 21, 0.45);
+}
+
+.btn-yellow:active { transform: scale(0.98); }
+
+/* OTP */
+.otp-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.otp-box {
+  width: 100%;
+  max-width: 52px;
+  height: 56px;
+  background: #030a22;
+  border: 1.5px solid var(--border);
+  border-radius: 14px;
+  outline: none;
+  color: var(--text);
+  text-align: center;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.otp-box::placeholder { color: #5b6a99; }
+
+.otp-box:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 10px rgba(34, 184, 255, 0.6);
+}
+
+.resend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #b9d3ff;
+}
+
+.resend i { font-size: 20px; color: var(--muted); }
+.resend b { font-size: 22px; color: var(--cyan); }
+
+/* Trust row */
+.trust-row {
+  display: flex;
+  margin-top: 0;
+}
+
+.trust-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 3px;
+  padding: 0 6px;
+}
+
+.trust-item + .trust-item {
+  border-left: 1px solid #1a2f6b;
+}
+
+.trust-item i {
+  font-size: 28px;
+  color: var(--cyan);
+  margin-bottom: 4px;
+}
+
+.trust-item b { font-size: 12px; }
+.trust-item span { font-size: 10px; color: var(--muted); }
+
+/* Bottom wave */
+.wave {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 100px;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 70% at 15% 110%, #0b4fe0 0, transparent 70%),
+    radial-gradient(ellipse 60% 80% at 85% 115%, #1d7bff 0, transparent 70%);
+}
+
+/* Content wave ke upar dikhe */
+.brand, .card, .trust-row {
+  position: relative;
+  z-index: 1;
+}
+
+/* Chhoti screen ke liye thoda compact */
+@media (max-height: 720px) {
+  .logo-text { font-size: 32px; }
+  .card { padding: 12px; }
+  .phone-box, .otp-box { height: 46px; }
+  .btn-yellow { height: 46px; font-size: 18px; }
+  .trust-item span { display: none; }
+}
+/* OTP card jab tak OTP na bheja ho */
+.card.locked {
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.phone-box.error { border-color: #ef4444; }
+
+.btn-yellow:disabled {
+  opacity: 0.6;
+  box-shadow: none;
+  cursor: not-allowed;
+}

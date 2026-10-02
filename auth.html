@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - PLAY & WIN</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="auth.css">
+</head>
+<head>
+
+    <div class="app-card">
+
+        <!-- Back + Controller -->
+        <a href="login.html" class="back-btn"><i class="fa-solid fa-chevron-left"></i></a>
+        <i class="fa-solid fa-gamepad top-pad"></i>
+
+        <!-- Brand -->
+        <div class="brand">
+            <i class="fa-solid fa-crown crown"></i>
+            <h1 class="logo-text">PLAY & WIN</h1>
+            <div class="subtitle">PLAY ◆ EARN ◆ WIN</div>
+        </div>
+
+        <!-- Mobile Number Card -->
+        <section class="card">
+            <div class="card-head">
+                <i class="fa-solid fa-mobile-screen-button head-icon"></i>
+                <div>
+                    <h2>Mobile Number</h2>
+                    <p>Enter your 10 digit mobile number</p>
+                </div>
+            </div>
+
+            <div class="phone-box">
+                <span class="flag">🇮🇳</span>
+                <span class="code">+91</span>
+                <span class="sep"></span>
+                <input type="tel" id="phone" placeholder="98765 43210" maxlength="10" inputmode="numeric">
+            </div>
+
+            <button class="btn-yellow" id="getOtpBtn">Get OTP</button>
+        </section>
+
+        <!-- Verify OTP Card -->
+        <section class="card">
+            <div class="card-head">
+                <i class="fa-solid fa-shield-halved head-icon"></i>
+                <div>
+                    <h2>Verify OTP</h2>
+                    <p>Enter the 6 digit code sent to your mobile number</p>
+                    <p class="sent-to">+91 <span id="shownPhone">98765 43210</span></p>
+                </div>
+            </div>
+
+            <div class="otp-row">
+                <input type="tel" class="otp-box" maxlength="1" inputmode="numeric" placeholder="–">
+                <input type="tel" class="otp-box" maxlength="1" inputmode="numeric" placeholder="–">
+                <input type="tel" class="otp-box" maxlength="1" inputmode="numeric" placeholder="–">
+                <input type="tel" class="otp-box" maxlength="1" inputmode="numeric" placeholder="–">
+                <input type="tel" class="otp-box" maxlength="1" inputmode="numeric" placeholder="–">
+                <input type="tel" class="otp-box" maxlength="1" inputmode="numeric" placeholder="–">
+            </div>
+
+            <div class="resend">
+                <i class="fa-regular fa-clock"></i>
+                <span>Resend OTP in</span>
+                <b id="timer">01:45</b>
+            </div>
+        </section>
+
+        <!-- Trust Row -->
+        <div class="trust-row">
+            <div class="trust-item">
+                <i class="fa-solid fa-shield-halved"></i>
+                <b>Safe & Secure</b>
+                <span>Your data is protected</span>
+            </div>
+            <div class="trust-item">
+                <i class="fa-solid fa-bolt"></i>
+                <b>Quick Access</b>
+                <span>Get started in seconds</span>
+            </div>
+            <div class="trust-item">
+                <i class="fa-solid fa-gamepad"></i>
+                <b>Play & Win</b>
+                <span>Real rewards, real fun</span>
+            </div>
+        </div>
+
+        <div class="wave"></div>
+    </div>
+
+  <div id="recaptcha-container"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="auth.js"></script>
+</body>
+  
+</html>
