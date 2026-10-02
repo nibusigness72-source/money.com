@@ -10,11 +10,11 @@
   };
   // n = chaku (kul 100), pre = pehle se laga chaku, pts = har chaku ke point, bonus = stage tutne ka bonus
   var STAGES = [
-    { n: 8,  pre: 0, pts: 2, bonus: 4, R: 68, spd: [1.0, 2.0], bob: 0,  hue: 40 },
-    { n: 14, pre: 2, pts: 2, bonus: 4, R: 74, spd: [1.4, 2.6], bob: 0,  hue: 170 },
-    { n: 20, pre: 3, pts: 3, bonus: 4, R: 80, spd: [1.8, 3.2], bob: 10, hue: 280 },
-    { n: 26, pre: 4, pts: 3, bonus: 4, R: 86, spd: [2.2, 3.8], bob: 16, hue: 350 },
-    { n: 32, pre: 5, pts: 3, bonus: 6, R: 92, spd: [2.6, 4.4], bob: 22, hue: 200 }
+    { n: 5,  pre: 0, pts: 5, bonus: 4, R: 68, spd: [1.0, 2.0], bob: 0,  hue: 40 },
+    { n: 8, pre: 2, pts: 5, bonus: 4, R: 74, spd: [1.4, 2.6], bob: 0,  hue: 170 },
+    { n: 11, pre: 3, pts: 5, bonus: 4, R: 80, spd: [1.8, 3.2], bob: 10, hue: 280 },
+    { n: 14, pre: 4, pts: 5, bonus: 4, R: 86, spd: [2.2, 3.8], bob: 16, hue: 350 },
+    { n: 20, pre: 5, pts: 5, bonus: 6, R: 92, spd: [2.6, 4.4], bob: 22, hue: 200 }
   ];
   // Kul max = 278 (chaku) + 22 (bonus) = 300
 
