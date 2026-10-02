@@ -1,0 +1,25 @@
+/* flip-ball.css - Flip Ball game ka design */
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; background: #0b1b3a; color: #fff; font-family: Arial, Helvetica, sans-serif; overflow: hidden; touch-action: manipulation; }
+
+.app { height: 100vh; height: 100dvh; max-width: 480px; margin: 0 auto; display: flex; flex-direction: column; background: linear-gradient(180deg, #0b1b3a, #12285a); }
+
+.header { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; }
+.header h1 { font-size: 20px; letter-spacing: .5px; }
+.back-btn { width: 36px; height: 36px; border-radius: 50%; background: #fff; color: #0b1b3a; text-decoration: none; font-size: 20px; font-weight: bold; display: flex; align-items: center; justify-content: center; }
+.pts { background: rgba(255,255,255,.12); padding: 6px 12px; border-radius: 20px; font-size: 14px; }
+
+.hud { display: flex; gap: 8px; padding: 0 12px 8px; }
+.hud-box { flex: 1; text-align: center; background: rgba(255,255,255,.1); border-radius: 12px; padding: 6px 4px; font-size: 12px; color: #b9c6ea; }
+.hud-box b { font-size: 20px; color: #facc15; }
+
+.stage { flex: 1; min-height: 0; padding: 0 8px 8px; }
+.stage canvas { width: 100%; height: 100%; display: block; border-radius: 14px; background: #e2e0c3; touch-action: none; }
+
+.overlay { position: fixed; inset: 0; background: rgba(5,12,30,.82); display: none; align-items: center; justify-content: center; z-index: 10; }
+.overlay.show { display: flex; }
+.result { width: 86%; max-width: 340px; text-align: center; background: #12285a; border: 2px solid #facc15; border-radius: 20px; padding: 26px 20px; }
+.result h2 { font-size: 26px; margin-bottom: 10px; }
+.result p { white-space: pre-line; color: #cfd8f3; line-height: 1.6; margin-bottom: 18px; }
+.yellow-btn { width: 100%; border: 0; border-radius: 30px; padding: 13px; font-size: 17px; font-weight: bold; color: #0b1b3a; background: linear-gradient(180deg, #ffe066, #facc15); cursor: pointer; }
+.back-link { display: block; margin-top: 14px; color: #9fb0d9; text-decoration: none; font-size: 14px; }
