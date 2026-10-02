@@ -5,18 +5,21 @@
 (function () {
   // ===== Yahan se settings badal sakte ho =====
   var CONFIG = {
-    TIME: 300,              // poora game 5 minute (300 second)
+    TIME: 60,              // poora game 5 minute (300 second)
     FREEZE: 5,              // galti par kitne second rukna
     TIMER_RUNS_IN_FREEZE: true, // true = ruke hue 5 second bhi 5 minute ke timer mein ginenge | false = timer ruk jayega
-    POINTS: 20,             // ek circle paar karne ke point
-    TOLERANCE: 26,          // circle ke beech se kitna upar/neeche chalega (bada = aasaan)
-    GRAVITY: 400,           // gend kitni tezi se neeche aaye
-    MAX_FALL: 140,          // neeche girne ki sabse zyada speed (chhota = aur dheere girti hai)
-    TAP_POWER: 210,         // ek tap par gend kitni upar jaye (bada = zyada upar)
-    RING_SPEED: 45,         // circle ki shuruaati speed (dheere dheere aata hai)
-    RING_SPEED_MAX: 80,     // circle ki sabse zyada speed
+    POINTS: 4,             // 1 "point" ki keemat (touch hone par 1x, bina touch par 2x, 3x, 4x...)
+    TOLERANCE: 32,          // circle ke beech se kitna upar/neeche tak gend "paar" maani jayegi (bada = aasaan)
+    CLEAN_TOL: 16,          // itna beech mein se nikli to "bina touch" (perfect) maana jayega
+    RING_RX: 40,            // circle ki aadhi chaudai (chhota = circle chhota)
+    RING_RY: 11,            // circle ki aadhi unchai
+    GRAVITY: 600,           // gend kitni tezi se neeche aaye
+    MAX_FALL: 240,          // neeche girne ki sabse zyada speed (chhota = aur dheere girti hai)
+    TAP_POWER: 200,         // ek tap par gend kitni upar jaye (bada = zyada upar)
+    RING_SPEED: 6000,         // circle ki shuruaati speed (dheere dheere aata hai)
+    RING_SPEED_MAX: 140,     // circle ki sabse zyada speed
     BOOST_EVERY: 5,         // har 5ve circle par neela circle (upar uthane wale nishan)
-    SHIELD_EVERY: 8         // har 8ve circle par shield wala circle (ek galti maaf)
+    SHIELD_EVERY: 15         // har 8ve circle par shield wala circle (ek galti maaf)
   };
 
   var W = 360, H = 640, GROUND = 560, BX = 70, BR = 18, TAU = Math.PI * 2;
@@ -33,7 +36,7 @@
 
   var state = 'play', score = 0, hoops = 0, timeLeft = CONFIG.TIME, frozen = 0;
   var x = BX, y = 300, vy = 0, rings = [], spawned = 0, lastY = 300, shield = false;
-  var floaters = [], flash = 0, t = 0, scroll = 0, missMsg = '';
+  var floaters = [], flash = 0, t = 0, scroll = 0, missMsg = '', combo = 0;
   var best = 0;
   try { best = +localStorage.getItem('flipBest') || 0; } catch (e) {}
   $('totalPoints').textContent = best;
@@ -61,7 +64,7 @@
 
   function startGame() {
     score = 0; hoops = 0; timeLeft = CONFIG.TIME; frozen = 0; spawned = 0;
-    shield = false; floaters = []; flash = 0; state = 'play';
+    shield = false; combo = 0; floaters = []; flash = 0; state = 'play';
     resetRound();
     updateHud();
     $('overlay').classList.remove('show');
@@ -81,7 +84,7 @@
       if (y > GROUND - BR - 2) { y = GROUND - BR - 2; vy = -380; }
       return;
     }
-    state = 'freeze'; frozen = CONFIG.FREEZE; flash = 0.35; missMsg = msg;
+    state = 'freeze'; frozen = CONFIG.FREEZE; flash = 0.35; missMsg = msg; combo = 0;
   }
 
   function endGame() {
@@ -144,9 +147,12 @@
     vy += CONFIG.GRAVITY * dt;
     if (vy > CONFIG.MAX_FALL) vy = CONFIG.MAX_FALL;
 
-    // neele circle ke neeche upar uthane wale nishan
+    // neele circle ke neeche (^) nishan: gend apne aap tezi se circle ke beech tak upar jati hai aur wahin ruki rehti hai
+    var RX = CONFIG.RING_RX;
     rings.forEach(function (r) {
-      if (r.type === 'boost' && !r.done && Math.abs(r.x - BX) < 55 && y > r.y && y < r.y + 160) vy = -300;
+      if (r.type === 'boost' && !r.done && Math.abs(r.x - BX) <= RX + 25 && y > r.y && y < r.y + 180) {
+        vy = clamp((r.y - y) * 6, -450, 0);
+      }
     });
 
     y += vy * dt;
@@ -157,25 +163,38 @@
     scroll += sp * dt;
     rings.forEach(function (r) { r.x -= sp * dt; });
 
-    // circle ka faisla: gend ke paas aate hi dekho beech se nikli ya nahi
+    // circle ka faisla
     for (var i = 0; i < rings.length; i++) {
       var r = rings[i];
-      if (!r.done && r.x <= BX) {
+      if (r.done) continue;
+      var dy = Math.abs(y - r.y);
+      var crossed = r.x <= BX;                     // circle ka beech gend ke upar se nikal gaya
+      var ok = false, clean = false;
+      if (crossed && dy <= CONFIG.TOLERANCE && r.x >= BX - RX) {
+        ok = true;
+        // beech se nikli aur circle se bilkul touch nahi hua to "clean" (perfect)
+        clean = !r.touched && dy <= CONFIG.CLEAN_TOL && r.x > BX - 6;
+      }
+      if (ok) {
         r.done = true;
-        if (Math.abs(y - r.y) <= CONFIG.TOLERANCE) {
-          score += CONFIG.POINTS; hoops++;
-          floaters.push({ x: BX + 60, y: y - 30, text: '+' + CONFIG.POINTS, life: 0.8, col: '#16a34a' });
-          if (r.type === 'shield') {
-            shield = true;
-            floaters.push({ x: BX + 60, y: y - 60, text: '🛡 SHIELD!', life: 1.2, col: '#0891b2', big: 1 });
-          }
-        } else {
-          miss('Circle chhoot gaya!');
-          if (state === 'freeze') { updateHud(); return; }
+        if (clean) combo++; else combo = 0;
+        var mult = clean ? combo + 1 : 1;
+        var pts = CONFIG.POINTS * mult;
+        score += pts; hoops++;
+        floaters.push({ x: BX + 70, y: y - 30, text: '+' + pts + (clean ? ' PERFECT x' + mult : ''), life: 1.0, col: clean ? '#b45309' : '#16a34a', big: clean ? 1 : 0 });
+        if (r.type === 'boost') vy = 0;
+        if (r.type === 'shield') {
+          shield = true;
+          floaters.push({ x: BX + 70, y: y - 60, text: '🛡 SHIELD!', life: 1.2, col: '#0891b2', big: 1 });
         }
+      } else if (r.x + RX < -4) {
+        // circle poora screen se bahar chala gaya aur gend usse paar nahi hui
+        r.done = true;
+        miss('Circle chhoot gaya!');
+        if (state === 'freeze') { updateHud(); return; }
       }
     }
-    rings = rings.filter(function (r) { return r.x > -90; });
+    rings = rings.filter(function (r) { return r.x > -120; });
     var lastR = rings[rings.length - 1];
     if (!lastR || lastR.x < W - 230) spawnRing(W + 60);
 
@@ -223,16 +242,17 @@
   }
 
   function ringShape(r, part) {   // part: 'all' ya 'front'
-    ctx.lineWidth = 11; ctx.strokeStyle = '#000';
+    var RX = CONFIG.RING_RX, RY = CONFIG.RING_RY;
+    ctx.lineWidth = 9; ctx.strokeStyle = '#000';
     var col = r.type === 'boost' ? '#38bdf8' : '#ef5350';
     ctx.beginPath();
-    if (part === 'front') ctx.ellipse(r.x, r.y, 52, 14, 0, 0, Math.PI);
-    else ctx.ellipse(r.x, r.y, 52, 14, 0, 0, TAU);
+    if (part === 'front') ctx.ellipse(r.x, r.y, RX, RY, 0, 0, Math.PI);
+    else ctx.ellipse(r.x, r.y, RX, RY, 0, 0, TAU);
     ctx.stroke();
-    ctx.lineWidth = 7; ctx.strokeStyle = col; ctx.stroke();
+    ctx.lineWidth = 5; ctx.strokeStyle = col; ctx.stroke();
     if (part !== 'front') {
       ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,.7)';
-      ctx.beginPath(); ctx.ellipse(r.x, r.y - 1, 36, 6, 0, Math.PI * 1.1, Math.PI * 1.7); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(r.x, r.y - 1, RX * 0.7, RY * 0.4, 0, Math.PI * 1.1, Math.PI * 1.7); ctx.stroke();
     }
   }
 
@@ -250,7 +270,7 @@
       var cy = r.y + 40 + i * 32 + ((t * 60) % 32) * 0 ;
       ctx.globalAlpha = 0.35 + 0.65 * (((t * 2) + i * 0.33) % 1 < 0.5 ? 1 : 0.4);
       ctx.strokeStyle = '#22b8e0'; ctx.lineWidth = 9; ctx.lineCap = 'round';
-      ctx.beginPath(); ctx.moveTo(r.x - 22, cy + 10); ctx.lineTo(r.x, cy - 6); ctx.lineTo(r.x + 22, cy + 10); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(r.x - 18, cy + 9); ctx.lineTo(r.x, cy - 6); ctx.lineTo(r.x + 18, cy + 9); ctx.stroke();
     }
     ctx.globalAlpha = 1; ctx.lineCap = 'butt';
   }
@@ -289,11 +309,11 @@
     rings.forEach(function (rg) {
       if (rg.type === 'boost') drawChevrons(rg);
       ringShape(rg, 'all');
-      if (rg.type === 'shield') drawShieldIcon(rg.x, rg.y + 12, 1);
+      if (rg.type === 'shield') drawShieldIcon(rg.x, rg.y + 10, 0.8);
     });
     drawBall(x, y);
     // circle ka aage wala hissa (gend circle ke andar se nikalti dikhe)
-    rings.forEach(function (rg) { if (Math.abs(rg.x - BX) < 60) ringShape(rg, 'front'); });
+    rings.forEach(function (rg) { if (Math.abs(rg.x - BX) < CONFIG.RING_RX + 20) ringShape(rg, 'front'); });
 
     floaters.forEach(function (f) { ctx.globalAlpha = Math.min(1, f.life * 2); text(f.text, f.x, f.y, f.big ? 22 : 20, f.col); ctx.globalAlpha = 1; });
 
