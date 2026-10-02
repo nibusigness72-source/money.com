@@ -45,13 +45,16 @@ document.querySelectorAll('.nav-item').forEach(function (item) {
   });
 });
 
-// Play Now button: har game ki apni file kholega (jab banegi)
+// Play Now button: game ka page kholega
 document.querySelectorAll('.play-btn').forEach(function (btn) {
   btn.addEventListener('click', function () {
     var game = btn.getAttribute('data-game');
-    alert(game + ' abhi ban raha hai');
-    // game file ban jaye to upar wali line hata kar ye use karna:
-    // window.location.href = game + '.html';
+    var ready = ['memory-match', 'stack-tower'];
+    if (ready.indexOf(game) !== -1) {
+      window.location.href = game + '.html';
+    } else {
+      alert(game + ' abhi ban raha hai');
+    }
   });
 });
 // Log Out: login status hatao, Firebase se bhi logout karo, phir login page par bhejo
