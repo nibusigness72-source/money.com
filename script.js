@@ -54,7 +54,7 @@ document.querySelectorAll('.play-btn').forEach(function (btn) {
     // window.location.href = game + '.html';
   });
 });
-// Log Out: login status hatao aur login page par bhejo
+// Log Out: login status hatao, Firebase se bhi logout karo, phir login page par bhejo
 var logoutBtn = document.getElementById('logoutBtn');
 if (logoutBtn) {
   logoutBtn.addEventListener('click', function (e) {
@@ -63,7 +63,14 @@ if (logoutBtn) {
       localStorage.removeItem('loggedIn');
       localStorage.removeItem('phone');
     } catch (err) {}
-    window.location.href = 'login.html';
+
+    function go() { window.location.href = 'login.html'; }
+
+    if (window.firebase && firebase.auth) {
+      firebase.auth().signOut().then(go, go);
+    } else {
+      go();
+    }
   });
 }
 // home.html wale saare links ko index.html par bhejo (home page ka naam index.html hai)
