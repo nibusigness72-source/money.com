@@ -9,10 +9,11 @@
     FREEZE: 5,              // galti par kitne second rukna
     TIMER_RUNS_IN_FREEZE: true, // true = ruke hue 5 second bhi 5 minute ke timer mein ginenge | false = timer ruk jayega
     POINTS: 4,             // 1 "point" ki keemat (touch hone par 1x, bina touch par 2x, 3x, 4x...)
-    TOLERANCE: 32,          // circle ke beech se kitna upar/neeche tak gend "paar" maani jayegi (bada = aasaan)
-    CLEAN_TOL: 16,          // itna beech mein se nikli to "bina touch" (perfect) maana jayega
-    RING_RX: 40,            // circle ki aadhi chaudai (chhota = circle chhota)
-    RING_RY: 11,            // circle ki aadhi unchai
+        HOLE: 30,               // circle ke khule hisse ki aadhi chaudai (bada = paar karna aasaan)
+    CLEAN_DX: 14,           // itna beech mein se nikli to "bina touch" (perfect) maana jayega
+    RING_RX: 40,            // circle ki aadhi chaudai
+    RING_RY: 15,            // circle ki aadhi unchai (bada = circle zyada khula dikhega)
+    BOOST_POWER: 330,       // neele circle mein gend kitni tezi se upar jaye    // circle ki aadhi unchai
     GRAVITY: 600,           // gend kitni tezi se neeche aaye
     MAX_FALL: 240,          // neeche girne ki sabse zyada speed (chhota = aur dheere girti hai)
     TAP_POWER: 200,         // ek tap par gend kitni upar jaye (bada = zyada upar)
@@ -142,19 +143,20 @@
       updateHud();
       return;
     }
-
-    // gend ki chaal
+// gend ki chaal
     vy += CONFIG.GRAVITY * dt;
     if (vy > CONFIG.MAX_FALL) vy = CONFIG.MAX_FALL;
 
-    // neele circle ke neeche (^) nishan: gend apne aap tezi se circle ke beech tak upar jati hai aur wahin ruki rehti hai
-    var RX = CONFIG.RING_RX;
+    var RX = CONFIG.RING_RX, HOLE = CONFIG.HOLE, SOLID = BR * 0.6;
+
+    // neele circle ke neeche (^) nishan: gend niche se upar circle ke andar se uthti hai
     rings.forEach(function (r) {
-      if (r.type === 'boost' && !r.done && Math.abs(r.x - BX) <= RX + 25 && y > r.y && y < r.y + 180) {
-        vy = clamp((r.y - y) * 6, -450, 0);
+      if (r.type === 'boost' && !r.done && Math.abs(r.x - BX) <= HOLE && y > r.y && y < r.y + 150) {
+        vy = -CONFIG.BOOST_POWER;
       }
     });
 
+    var py = y;                         // gend pehle kahan thi
     y += vy * dt;
     if (y < BR + 4) { y = BR + 4; vy = 0; }
 
@@ -163,32 +165,48 @@
     scroll += sp * dt;
     rings.forEach(function (r) { r.x -= sp * dt; });
 
-    // circle ka faisla
     for (var i = 0; i < rings.length; i++) {
       var r = rings[i];
       if (r.done) continue;
-      var dy = Math.abs(y - r.y);
-      var crossed = r.x <= BX;                     // circle ka beech gend ke upar se nikal gaya
-      var ok = false, clean = false;
-      if (crossed && dy <= CONFIG.TOLERANCE && r.x >= BX - RX) {
-        ok = true;
-        // beech se nikli aur circle se bilkul touch nahi hua to "clean" (perfect)
-        clean = !r.touched && dy <= CONFIG.CLEAN_TOL && r.x > BX - 6;
-      }
-      if (ok) {
-        r.done = true;
-        if (clean) combo++; else combo = 0;
-        var mult = clean ? combo + 1 : 1;
-        var pts = CONFIG.POINTS * mult;
-        score += pts; hoops++;
-        floaters.push({ x: BX + 70, y: y - 30, text: '+' + pts + (clean ? ' PERFECT x' + mult : ''), life: 1.0, col: clean ? '#b45309' : '#16a34a', big: clean ? 1 : 0 });
-        if (r.type === 'boost') vy = 0;
-        if (r.type === 'shield') {
-          shield = true;
-          floaters.push({ x: BX + 70, y: y - 60, text: '🛡 SHIELD!', life: 1.2, col: '#0891b2', big: 1 });
+      var adx = Math.abs(r.x - BX);                       // gend circle ke beech se kitni door
+      var down = py <= r.y && y > r.y;                    // gend upar se niche nikli
+      var up = py >= r.y && y < r.y;                      // gend niche se upar nikli
+
+      if (adx <= HOLE) {
+        // gend circle ke khule hisse (hole) ke andar se nikal rahi hai
+        if (down || up) {
+          var needUp = (r.type === 'boost');              // neela = niche se upar | lal = upar se niche
+          if ((needUp && up) || (!needUp && down)) {
+            r.done = true;
+            var clean = !r.touched && adx <= CONFIG.CLEAN_DX;   // bina touch ke beech se nikli
+            if (clean) combo++; else combo = 0;
+            var mult = clean ? combo + 1 : 1;
+            var pts = CONFIG.POINTS * mult;
+            score += pts; hoops++;
+            floaters.push({ x: BX + 70, y: y - 30, text: '+' + pts + (clean ? ' PERFECT x' + mult : ''), life: 1.0, col: clean ? '#b45309' : '#16a34a', big: clean ? 1 : 0 });
+            if (needUp) vy = -60;
+            if (r.type === 'shield') {
+              shield = true;
+              floaters.push({ x: BX + 70, y: y - 60, text: '🛡 SHIELD!', life: 1.2, col: '#0891b2', big: 1 });
+            }
+          } else {
+            // galat disha: lal mein niche se upar ya neele mein upar se niche
+            r.done = true;
+            miss(needUp ? 'Neele circle mein niche se upar!' : 'Lal circle mein upar se niche!');
+            if (state === 'freeze') { updateHud(); return; }
+          }
         }
-      } else if (r.x + RX < -4) {
-        // circle poora screen se bahar chala gaya aur gend usse paar nahi hui
+      } else if (adx <= RX + 12) {
+        // circle ka kinara (rim) thos hai: gend aar-paar nahi ja sakti
+        if (down || up || Math.abs(y - r.y) < SOLID) {
+          if (py < r.y) { y = r.y - SOLID; if (vy > 0) vy = 0; }
+          else          { y = r.y + SOLID; if (vy < 0) vy = 0; }
+          r.touched = true;
+        }
+      }
+
+      // circle poora screen se bahar chala gaya aur gend usse paar nahi hui
+      if (!r.done && r.x + RX < -4) {
         r.done = true;
         miss('Circle chhoot gaya!');
         if (state === 'freeze') { updateHud(); return; }
@@ -243,13 +261,13 @@
 
   function ringShape(r, part) {   // part: 'all' ya 'front'
     var RX = CONFIG.RING_RX, RY = CONFIG.RING_RY;
-    ctx.lineWidth = 9; ctx.strokeStyle = '#000';
+    ctx.lineWidth = 8; ctx.strokeStyle = '#000';
     var col = r.type === 'boost' ? '#38bdf8' : '#ef5350';
     ctx.beginPath();
     if (part === 'front') ctx.ellipse(r.x, r.y, RX, RY, 0, 0, Math.PI);
     else ctx.ellipse(r.x, r.y, RX, RY, 0, 0, TAU);
     ctx.stroke();
-    ctx.lineWidth = 5; ctx.strokeStyle = col; ctx.stroke();
+    ctx.lineWidth = 4; ctx.strokeStyle = col; ctx.stroke();
     if (part !== 'front') {
       ctx.lineWidth = 2; ctx.strokeStyle = 'rgba(255,255,255,.7)';
       ctx.beginPath(); ctx.ellipse(r.x, r.y - 1, RX * 0.7, RY * 0.4, 0, Math.PI * 1.1, Math.PI * 1.7); ctx.stroke();
