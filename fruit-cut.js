@@ -145,12 +145,14 @@
     o.cut = true;
     if (o.bomb) {                                   // bomb kata: 5 second game ruk jata hai
       state = 'freeze'; frozen = CONFIG.FREEZE; flash = 0.45;
+      FruitSound.bomb();
       burst(o.x, o.y, '#f97316', 26, 260); burst(o.x, o.y, '#3f3f46', 16, 200);
       floaters.push({ x: o.x, y: o.y - 20, text: 'BOMB!', life: 1.4, col: '#ef4444', big: 1 });
       objs = []; halves = [];
       return;
     }
     score += o.f.pts; cuts++;
+    FruitSound.slice();
     floaters.push({ x: o.x, y: o.y - 14, text: '+' + o.f.pts, life: 0.9, col: '#fde047', big: 0 });
     burst(o.x, o.y, o.f.juice, 14, 170);
     var nx = -Math.sin(ang), ny = Math.cos(ang);    // kaat ke seedhe disha
@@ -338,6 +340,7 @@
   cv.addEventListener('pointerdown', function (e) {
     e.preventDefault();
     try { cv.setPointerCapture(e.pointerId); } catch (x) {}
+    FruitSound.unlock();
     var p = toGame(e.clientX, e.clientY);
     trails[e.pointerId] = { pts: [{ x: p.x, y: p.y, t: t }] };
   });
