@@ -7,10 +7,10 @@
     TIME: 60,                   // poora game 1 minute (60 second)
     FREEZE: 5,                  // bomb kaatne par kitne second rukna
     TIMER_RUNS_IN_FREEZE: true, // true = ruke hue 5 second bhi 1 minute ke timer mein ginenge | false = timer ruk jayega
-    GRAVITY: 290,               // phal kitni tezi se neeche aaye (chhota = aur dheere)
-    LAUNCH_MIN: 390,            // phal ke upar jaane ki kam se kam tezi
-    LAUNCH_MAX: 350,            // phal ke upar jaane ki zyada se zyada tezi (bada = zyada upar jayega)
-    SPAWN_GAP_MIN: 0.9,         // agle phal ke beech kam se kam kitne second
+    GRAVITY: 350,               // phal kitni tezi se neeche aaye (chhota = aur dheere)
+    LAUNCH_MIN: 410,            // phal ke upar jaane ki kam se kam tezi
+    LAUNCH_MAX: 500,            // phal ke upar jaane ki zyada se zyada tezi (bada = zyada upar jayega)
+    SPAWN_GAP_MIN: 0.7,         // agle phal ke beech kam se kam kitne second
     SPAWN_GAP_MAX: 1.6,         // agle phal ke beech zyada se zyada kitne second
     MAX_PER_WAVE: 5,            // ek baar mein ek saath zyada se zyada kitne phal
     BOMB_CHANCE: 0.14,          // bomb aane ka mauka (0.14 = 14%)
@@ -21,12 +21,12 @@
   // pts = us phal ko kaatne ke point | r = phal ka size
   var FRUITS = [
     { name: 'Tarbuj',    emoji: '🍉', pts: 1, r: 34, juice: '#ef4444' },
-    { name: 'Santra',    emoji: '🍊', pts: 2, r: 26, juice: '#fb923c' },
-    { name: 'Kela',      emoji: '🍌', pts: 2, r: 28, juice: '#fde047' },
+    { name: 'Santra',    emoji: '🍊', pts: 2.5, r: 26, juice: '#fb923c' },
+    { name: 'Kela',      emoji: '🍌', pts: 3, r: 28, juice: '#fde047' },
     { name: 'Seb',       emoji: '🍎', pts: 2, r: 26, juice: '#fef3c7' },
-    { name: 'Nimbu',     emoji: '🍋', pts: 2, r: 24, juice: '#fde047' },
+    { name: 'Nimbu',     emoji: '🍋', pts: 3, r: 24, juice: '#fde047' },
     { name: 'Aam',       emoji: '🥭', pts: 2, r: 26, juice: '#fbbf24' },
-    { name: 'Nariyal',   emoji: '🥥', pts: 1, r: 30, juice: '#f5f5f4' },
+    { name: 'Nariyal',   emoji: '🥥', pts: 2, r: 30, juice: '#f5f5f4' },
     { name: 'Kathal',    emoji: null, pts: 1, r: 38, juice: '#facc15' }   // bhari phal - 1 point (khud ban hua drawing)
   ];
 
