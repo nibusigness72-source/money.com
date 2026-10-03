@@ -85,7 +85,7 @@ document.querySelectorAll('a[href="home.html"]').forEach(function (a) {
 document.querySelectorAll('.play-btn').forEach(function (btn) {
   btn.addEventListener('click', function () {
     var game = btn.getAttribute('data-game');
-  var ready = ['flip-ball','fruit-cut'," 'stack-tower', 'knife-hit'];
+  var ready = ['flip-ball','fruit-cut', 'stack-tower', 'knife-hit'];
     if (ready.indexOf(game) !== -1) {
       window.location.href = game + '.html';
     } else {
