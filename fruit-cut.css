@@ -1,0 +1,22 @@
+/* fruit-cut.css - Fruit Cut game ka design */
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+html, body { width: 100%; height: 100%; background: #1b0f0a; overflow: hidden; overscroll-behavior: none;
+  font-family: Arial, Helvetica, sans-serif; color: #fff;
+  -webkit-user-select: none; user-select: none; touch-action: none; }
+
+/* #wrap ka size aur ghumna fruit-cut.js khud set karta hai */
+#wrap { position: fixed; top: 0; left: 0; transform-origin: 0 0; overflow: hidden; background: #1b0f0a; }
+#wrap canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+
+.back-btn { position: absolute; left: 12px; bottom: 12px; width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(255,255,255,.92); color: #3b1d12; text-decoration: none; font-size: 22px; font-weight: bold;
+  display: flex; align-items: center; justify-content: center; z-index: 5; }
+
+.overlay { position: absolute; inset: 0; background: rgba(20,8,4,.82); display: none; align-items: center; justify-content: center; z-index: 10; }
+.overlay.show { display: flex; }
+.result { width: min(86%, 340px); text-align: center; background: #3b1d12; border: 2px solid #facc15; border-radius: 20px; padding: 22px 20px; }
+.result h2 { font-size: 26px; margin-bottom: 8px; }
+.result p { white-space: pre-line; color: #f3dcc9; line-height: 1.6; margin-bottom: 16px; }
+.yellow-btn { width: 100%; border: 0; border-radius: 30px; padding: 12px; font-size: 17px; font-weight: bold; color: #3b1d12;
+  background: linear-gradient(180deg, #ffe066, #facc15); cursor: pointer; }
+.back-link { display: block; margin-top: 12px; color: #d9b9a3; text-decoration: none; font-size: 14px; }

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Fruit Cut</title>
+  <link rel="stylesheet" href="fruit-cut.css">
+</head>
+<body>
+
+  <!-- Poora game yahan hai. Phone seedha ho to ye apne aap 90 degree ghoom kar lamba (landscape) ho jata hai -->
+  <div id="wrap">
+    <canvas id="game"></canvas>
+    <a href="play.html" class="back-btn">←</a>
+
+    <!-- Result (sirf 1 minute poore hone par dikhega) -->
+    <div class="overlay" id="overlay">
+      <div class="result">
+        <h2 id="resultTitle"></h2>
+        <p id="resultText"></p>
+        <button class="yellow-btn" id="againBtn">Play Again</button>
+        <a href="play.html" class="back-link">Wapas jao</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="fruit-cut.js"></script>
+</body>
+</html>
