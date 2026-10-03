@@ -138,6 +138,7 @@ function showPopup(label, cls, pts) {
 
 // Tap: block chhodo (pehle tap se 1 minute ki ghadi shuru)
 function dropBlock() {
+  Sound.unlock();   // pehle tap par awaaz chalu
   if (state !== 'swing') return;
   if (!endTime) endTime = performance.now() + TOTAL_TIME * 1000;
 
@@ -150,10 +151,12 @@ function dropBlock() {
     landY: groundY - (stack.length + 1) * BH
   };
   state = 'drop';
+  Sound.drop();
 }
 
 // Poora tower gir gaya: sab block bikhar kar girenge
 function collapseTower(now, dir) {
+  Sound.collapse();
   stack.forEach(function (b) {
     pieces.push({
       x: b.x, y: b.y,
@@ -194,9 +197,9 @@ function landBlock(now) {
   var r = Math.abs(diff) / BW;
   var pts, label, cls;
 
-  if (r <= 0.10)      { pts = 5; label = 'Perfect!'; cls = 'perfect'; perfects++; }
-  else if (r <= 0.30) { pts = 2; label = 'Good!';    cls = 'good'; }
-  else if (r <= 0.60) { pts = 1; label = 'Average!'; cls = 'avg'; }
+  if (r <= 0.10)      { pts = 5; label = 'Perfect!'; cls = 'perfect'; perfects++; Sound.land(3); }
+  else if (r <= 0.30) { pts = 2; label = 'Good!';    cls = 'good'; Sound.land(2); }
+  else if (r <= 0.60) { pts = 1; label = 'Average!'; cls = 'avg'; Sound.land(1); }
   else {
     // Bahut door: tower gir gaya
     collapseTower(now, diff < 0 ? -1 : 1);
@@ -220,6 +223,7 @@ function finish() {
   popupEl.className = 'popup';
   timeEl.textContent = '0';
 
+  Sound.end();
   resultTitle.textContent = '⏰ Time khatam';
   resultText.textContent = 'Score: ' + score +
     '  |  Blocks: ' + blocks +
@@ -250,7 +254,10 @@ function update(dt, now) {
   camY += (wantCam - camY) * Math.min(1, dt * 6);
 
   if (state === 'swing') {
+    var oldPhase = phase;
     phase += omega() * dt;
+    // rassi beech se guzre to halki sansanahat
+    if (Math.floor(phase / Math.PI) !== Math.floor(oldPhase / Math.PI)) Sound.swing();
   } else if (state === 'drop') {
     cur.vy += GRAVITY * dt;
     cur.y += cur.vy * dt;
