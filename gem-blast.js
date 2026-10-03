@@ -829,6 +829,7 @@
     // TODO: score server par bhejna (Firebase Cloud Function se verify karke).
     // Abhi sirf console mein dikhta hai aur ek event nikalta hai jise baad mein jod sakte hain.
     console.log('Gem Blast result', result);
+    if (window.PWScore) PWScore.save('gem-blast', result.score);
     try {
       window.dispatchEvent(new CustomEvent('game:finished', { detail: Object.assign({ game: 'gem-blast' }, result) }));
     } catch (e) {}

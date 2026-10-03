@@ -58,20 +58,10 @@ firebase.auth().onAuthStateChanged(function (user) {
     totalEl.textContent = snap.val() || 0;
   });
 });
-
 function savePoints(pts) {
-  if (!currentUser) {
-    resultText.textContent += ' (Points save nahi hue, pehle login karo)';
-    return;
-  }
-  var ref = db.ref('users/' + currentUser.uid);
-  ref.child('points').transaction(function (cur) {
-    return (cur || 0) + pts;
-  }).then(function (res) {
-    totalEl.textContent = res.snapshot.val();
-  });
-  ref.child('pointsByDay/' + todayKey()).transaction(function (cur) {
-    return (cur || 0) + pts;
+  PWScore.save('knife-hit', pts).then(function (r) {
+    if (r) totalEl.textContent = r.total;
+    else resultText.textContent += ' (Points save nahi hue, pehle login karo)';
   });
 }
 

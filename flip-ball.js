@@ -99,12 +99,9 @@
     $('overlay').classList.add('show');
   }
 
-  // Sabse achha score Firebase mein save (users/<uid>/flipBallBest)
+// Score score.js ke zariye save hota hai
   function saveOnline() {
-    try {
-      var u = window.firebase && firebase.auth().currentUser;
-      if (u) firebase.database().ref('users/' + u.uid + '/flipBallBest').transaction(function (c) { return Math.max(c || 0, score); });
-    } catch (e) {}
+    if (window.PWScore) PWScore.save('flip-ball', score);
   }
 
   function fmt(s) {
