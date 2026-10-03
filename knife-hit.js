@@ -1,243 +1,503 @@
-// knife-hit.js  —  Knife Hit game (5 stage, 100 chaku, 60 second, ~300 points)
-(function () {
-  // ===== Yahan se settings badal sakte ho =====
-  var CONFIG = {
-    TIME: 60,            // total samay (second)
-    COLLISION: 'freeze', // 'freeze' = 5 sec rukna | 'out' = seedha out
-    FREEZE: 5,           // chaku takraye to kitne second rukna
-    STAGE_TIME_BONUS: 3, // stage todne par extra second
-    GAP_PX: 9            // chaku ke beech kam se kam gap (bada = zyada aasaan/kam jagah)
-  };
-  // n = chaku (kul 100), pre = pehle se laga chaku, pts = har chaku ke point, bonus = stage tutne ka bonus
-  var STAGES = [
-    { n: 5,  pre: 0, pts: 5, bonus: 4, R: 68, spd: [1.0, 2.0], bob: 0,  hue: 40 },
-    { n: 8, pre: 2, pts: 5, bonus: 4, R: 74, spd: [1.4, 2.6], bob: 0,  hue: 170 },
-    { n: 11, pre: 3, pts: 5, bonus: 4, R: 80, spd: [1.8, 3.2], bob: 10, hue: 280 },
-    { n: 14, pre: 4, pts: 5, bonus: 4, R: 86, spd: [2.2, 3.8], bob: 16, hue: 350 },
-    { n: 20, pre: 5, pts: 5, bonus: 6, R: 92, spd: [2.6, 4.4], bob: 22, hue: 200 }
-  ];
-  // Kul max = 278 (chaku) + 22 (bonus) = 300
+// knife-hit.js - original Knife Hit jaisa: lakdi ka gol, chaku, awaaz | 1 minute, 5 stage, 100 chaku
 
-  var W = 360, H = 640, TAU = Math.PI * 2, DPR = Math.min(window.devicePixelRatio || 1, 2);
-  var cv = document.getElementById('game'), ctx = cv.getContext('2d');
-  var $ = function (id) { return document.getElementById(id); };
-  var CY = 235;
+var TOTAL_TIME = 60;     // kul samay (second)
+var WAIT_TIME = 5;       // chaku takrane par intezaar (second)
+var CLEAR_BONUS = 4;     // har stage poora karne ka bonus
+var CLASH = 0.1;         // do chaku kitne paas hon to takra jayenge
+var THROW_SPEED = 1700;  // chaku kitni tezi se jayega
+var PEN = 0.7;           // phal ka kitna hissa lakdi ke andar jata hai
 
-  var state = 'ready', si = 0, stage, left, stuck, rot, spd, tgt, nextChange, t = 0;
-  var score = 0, timeLeft = CONFIG.TIME, frozen = 0, fly = null, bt = 0, flash = 0, kick = 0;
-  var shards = [], debris = [], floaters = [], total = 0;
-  var best = 0;
-  try { best = +localStorage.getItem('knifeBest') || 0; } catch (e) {}
-  $('totalPoints').textContent = best;
+// 5 stage, lakdi ka rang har stage mein thoda alag | chaku 7+13+20+27+33 = 100 | max 280 + 20 bonus = 300
+var STAGES = [
+  { knives: 7,  pre: 2, pts: 6, min: 1.4, max: 2.4, stop: 0.15, hue: 0 },
+  { knives: 10, pre: 3, pts: 6, min: 1.8, max: 3.0, stop: 0.20, hue: -8 },
+  { knives: 12, pre: 4, pts: 6, min: 2.2, max: 3.6, stop: 0.25, hue: 8 },
+  { knives: 14, pre: 5, pts: 6, min: 2.6, max: 4.2, stop: 0.30, hue: -14 },
+  { knives: 22, pre: 6, pts: 6, min: 3.0, max: 4.8, stop: 0.30, hue: 14 }
+];
 
-  function rnd(a, b) { return a + Math.random() * (b - a); }
-  function angDiff(a, b) { var d = ((a - b) % TAU + TAU) % TAU; return d > Math.PI ? TAU - d : d; }
-  function minGap() { return CONFIG.GAP_PX / stage.R; }
-  function cyNow() { return CY + Math.sin(t * 1.6) * stage.bob; }
+var canvas = document.getElementById('game');
+var ctx = canvas.getContext('2d');
 
-  function resize() {
-    var r = cv.getBoundingClientRect();
-    cv.width = r.width * DPR; cv.height = r.height * DPR;
+var scoreEl     = document.getElementById('score');
+var timeEl      = document.getElementById('timeLeft');
+var stageEl     = document.getElementById('stage');
+var knivesEl    = document.getElementById('knives');
+var totalEl     = document.getElementById('totalPoints');
+var popupEl     = document.getElementById('popup');
+var overlay     = document.getElementById('overlay');
+var resultTitle = document.getElementById('resultTitle');
+var resultText  = document.getElementById('resultText');
+var againBtn    = document.getElementById('againBtn');
+
+var db = firebase.database();
+var currentUser = null;
+
+var W, H, cx, cy, R, BL, HL, startY;
+var stageNo, stuck, flying, fallers, knivesLeft, hits, score, clashes;
+var rot, omega, target, changeIn, kRate, kick;
+var state, endTime, waitEnd, breakT, clock, hintOn;
+var popupTimer = null;
+var lastTime = 0;
+var loopId = null;
+
+function pad(n) {
+  return n < 10 ? '0' + n : '' + n;
+}
+
+// Aaj ki tareekh (leaderboard ke daily/weekly/monthly ke liye)
+function todayKey() {
+  var d = new Date();
+  return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate());
+}
+
+firebase.auth().onAuthStateChanged(function (user) {
+  if (!user) return;
+  currentUser = user;
+  db.ref('users/' + user.uid + '/points').once('value').then(function (snap) {
+    totalEl.textContent = snap.val() || 0;
+  });
+});
+
+function savePoints(pts) {
+  if (!currentUser) {
+    resultText.textContent += ' (Points save nahi hue, pehle login karo)';
+    return;
   }
-  window.addEventListener('resize', resize);
+  var ref = db.ref('users/' + currentUser.uid);
+  ref.child('points').transaction(function (cur) {
+    return (cur || 0) + pts;
+  }).then(function (res) {
+    totalEl.textContent = res.snapshot.val();
+  });
+  ref.child('pointsByDay/' + todayKey()).transaction(function (cur) {
+    return (cur || 0) + pts;
+  });
+}
 
-  // ---------- Stage shuru ----------
-  function startStage(i) {
-    si = i; stage = STAGES[i]; left = stage.n; stuck = []; total = stage.n;
-    rot = Math.random() * TAU; spd = 0; nextChange = 0.5; tgt = 0;
-    for (var k = 0, tries = 0; k < stage.pre && tries < 200; tries++) {
-      var a = Math.random() * TAU, ok = true;
-      for (var j = 0; j < stuck.length; j++) if (angDiff(a, stuck[j]) < minGap() * 3) ok = false;
-      if (ok) { stuck.push(a); k++; }
+function setup() {
+  var dpr = window.devicePixelRatio || 1;
+  var r = canvas.getBoundingClientRect();
+  W = r.width;
+  H = r.height;
+  canvas.width = Math.round(W * dpr);
+  canvas.height = Math.round(H * dpr);
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  R = Math.max(50, Math.min(W * 0.23, H * 0.16));  // lakdi ka radius
+  cx = W / 2;
+  cy = H * 0.34;
+  BL = R * 0.8;                                     // phal ki lambai
+  HL = R * 0.5;                                     // mutthe ki lambai
+  startY = H - BL - HL - 14;                        // chaku yahan se chalega
+}
+
+function showPopup(label, cls, pts) {
+  clearTimeout(popupTimer);
+  popupEl.className = 'popup';
+  void popupEl.offsetWidth;
+  popupEl.innerHTML = (pts ? '+' + pts + '<br>' : '') + label;
+  popupEl.className = 'popup show ' + cls;
+  popupTimer = setTimeout(function () {
+    popupEl.className = 'popup';
+  }, 900);
+}
+
+function normAngle(a) {
+  var t = Math.PI * 2;
+  return ((a % t) + t) % t;
+}
+
+function angleDiff(a, b) {
+  var d = Math.abs(normAngle(a) - normAngle(b));
+  return Math.min(d, Math.PI * 2 - d);
+}
+
+function newGame() {
+  if (loopId) cancelAnimationFrame(loopId);
+  setup();
+  stageNo = 0;
+  score = 0;
+  hits = 0;
+  clashes = 0;
+  endTime = 0;
+  clock = 0;
+  kick = 0;
+  hintOn = true;
+  scoreEl.textContent = '0';
+  timeEl.textContent = TOTAL_TIME;
+  popupEl.className = 'popup';
+  overlay.classList.remove('show');
+  startStage();
+  lastTime = performance.now();
+  loopId = requestAnimationFrame(loop);
+}
+
+// Naya stage: pehle se lage chaku random jagah
+function startStage() {
+  var s = STAGES[stageNo];
+  stuck = [];
+  flying = null;
+  fallers = [];
+  rot = 0;
+  omega = 0;
+  target = 0;
+  changeIn = 0.5;
+  kRate = 10;
+  knivesLeft = s.knives;
+  state = 'play';
+
+  var tries = 0;
+  while (stuck.length < s.pre && tries < 500) {
+    tries++;
+    var a = Math.random() * Math.PI * 2;
+    var ok = true;
+    for (var i = 0; i < stuck.length; i++) {
+      if (angleDiff(a, stuck[i]) < 0.5) ok = false;
     }
-    $('stageNo').textContent = i + 1;
-    floaters.push({ x: W / 2, y: 90, text: 'STAGE ' + (i + 1), life: 1.4, col: '#facc15', big: 1 });
+    if (ok) stuck.push(a);
   }
 
-  function startGame() {
-    score = 0; timeLeft = CONFIG.TIME; frozen = 0; fly = null;
-    shards = []; debris = []; floaters = []; state = 'play';
-    startStage(0); updateHud();
-    $('overlay').classList.remove('show');
-  }
+  stageEl.textContent = stageNo + 1;
+  knivesEl.textContent = knivesLeft;
+  showPopup('Stage ' + (stageNo + 1) + (stageNo === 4 ? ' BOSS' : ''), 'gold', 0);
+}
 
-  // ---------- Circle ki random chaal ----------
-  function pickMotion() {
-    if (Math.random() < 0.22) { tgt = 0; nextChange = rnd(0.3, 0.8); }          // achanak ruk jao
-    else {
-      tgt = (Math.random() < 0.5 ? -1 : 1) * rnd(stage.spd[0], stage.spd[1]);   // left ya right
-      nextChange = rnd(0.5, 1.6);
-      if (Math.random() < 0.35) spd = tgt;                                        // achanak palat jao
-    }
+// Lakdi ki chaal: kabhi left, kabhi right, kabhi achanak ruk jana ya palat jana
+function pickMotion() {
+  var s = STAGES[stageNo];
+  if (Math.random() < s.stop) {
+    target = 0;
+    changeIn = 0.25 + Math.random() * 0.5;
+    kRate = 30;
+  } else {
+    var dir = Math.random() < 0.5 ? -1 : 1;
+    target = dir * (s.min + Math.random() * (s.max - s.min));
+    changeIn = 0.4 + Math.random() * 1.1;
+    kRate = Math.random() < 0.4 ? 25 : 8;
   }
+}
 
-  // ---------- Chaku fenko ----------
-  function throwKnife() {
-    if (state !== 'play' || frozen > 0 || fly) return;
-    fly = { y: H - 120 };
-  }
+function updateSpin(dt) {
+  changeIn -= dt;
+  if (changeIn <= 0) pickMotion();
+  omega += (target - omega) * Math.min(1, dt * kRate);
+  rot += omega * dt;
+}
 
-  function land() {
-    var a = Math.PI / 2 - rot, hit = false;
-    for (var i = 0; i < stuck.length; i++) if (angDiff(a, stuck[i]) < minGap()) hit = true;
-    if (hit) {
-      debris.push({ x: W / 2, y: fly.y, vx: rnd(-220, 220), vy: 420, th: Math.PI / 2, vth: rnd(-9, 9), life: 1.5 });
-      fly = null; flash = 0.35;
-      floaters.push({ x: W / 2, y: 330, text: 'TAKRAYA!', life: 1, col: '#ff5d5d', big: 1 });
-      if (CONFIG.COLLISION === 'out') return end(false);
-      frozen = CONFIG.FREEZE;
+function throwKnife() {
+  Sound.unlock();   // pehle tap par awaaz chalu
+  if (state !== 'play' || flying || knivesLeft <= 0) return;
+  if (!endTime) endTime = performance.now() + TOTAL_TIME * 1000;
+  hintOn = false;
+  flying = { y: startY };
+  knivesLeft--;
+  knivesEl.textContent = knivesLeft;
+  Sound.drop();
+}
+
+// Chaku lakdi tak pahunch gaya
+function landKnife(now) {
+  var a = normAngle(Math.PI / 2 - rot);
+  for (var i = 0; i < stuck.length; i++) {
+    if (angleDiff(a, stuck[i]) < CLASH) {
+      // chaku se chaku takraya: tan-tan, 5 second ruko
+      fallers.push({ x: cx, y: flying.y, vx: (Math.random() < 0.5 ? -1 : 1) * (90 + Math.random() * 80), vy: -300, r: 0 });
+      flying = null;
+      knivesLeft++;
+      knivesEl.textContent = knivesLeft;
+      clashes++;
+      state = 'wait';
+      waitEnd = now + WAIT_TIME * 1000;
+      Sound.clink();
+      showPopup('Chaku takra gaya!', 'miss', 0);
       return;
     }
-    stuck.push(a); fly = null; left--; kick = 6;
-    score += stage.pts;
-    floaters.push({ x: W / 2 + 40, y: 330, text: '+' + stage.pts, life: 0.7, col: '#7dff9b' });
-    updateHud();
-    if (left === 0) breakStage();
   }
 
-  // ---------- Sab chaku sahi lage = circle toot jaye ----------
-  function breakStage() {
-    state = 'break'; bt = 1.3;
-    score += stage.bonus; timeLeft += CONFIG.STAGE_TIME_BONUS;
-    floaters.push({ x: W / 2, y: 140, text: 'STAGE CLEAR +' + stage.bonus, life: 1.3, col: '#facc15', big: 1 });
-    var n = 8, cy = cyNow();
-    for (var i = 0; i < n; i++) {
-      var a0 = i * TAU / n + rot, a1 = (i + 1) * TAU / n + rot, m = (a0 + a1) / 2;
-      shards.push({ x: W / 2, y: cy, a0: a0, a1: a1, vx: Math.cos(m) * rnd(120, 260), vy: Math.sin(m) * rnd(120, 260) - 120, r: 0, vr: rnd(-4, 4), col: wedgeColor(i), R: stage.R });
-    }
-    stuck.forEach(function (s) {
-      var th = s + rot;
-      debris.push({ x: W / 2 + Math.cos(th) * stage.R, y: cy + Math.sin(th) * stage.R, vx: Math.cos(th) * rnd(150, 300), vy: Math.sin(th) * rnd(150, 300) - 150, th: th, vth: rnd(-8, 8), life: 1.4 });
-    });
-    stuck = []; updateHud();
+  var s = STAGES[stageNo];
+  stuck.push(a);
+  flying = null;
+  hits++;
+  score += s.pts;
+  scoreEl.textContent = score;
+  kick = 7;                 // lakdi halka sa hilti hai
+  Sound.stab();             // lakdi mein dasne ki awaaz
+  showPopup('Sahi!', 'good', s.pts);
+
+  if (knivesLeft === 0) {   // stage ke saare chaku lag gaye: lakdi toot jayegi
+    score += CLEAR_BONUS;
+    scoreEl.textContent = score;
+    state = 'break';
+    breakT = 0;
+    Sound.crack();
+    showPopup('Stage clear!', 'gold', CLEAR_BONUS);
   }
+}
 
-  function end(win) {
-    state = 'over';
-    try { if (score > best) { best = score; localStorage.setItem('knifeBest', best); } } catch (e) {}
-    $('totalPoints').textContent = best;
-    saveOnline();
-    $('resultTitle').textContent = win ? '🏆 Shabaash!' : (timeLeft <= 0 ? '⏰ Time Over' : '💥 Out!');
-    $('resultText').textContent = 'Score: ' + score + '\nStage: ' + (si + 1) + '/5';
-    $('againBtn').textContent = 'Play Again';
-    $('overlay').classList.add('show');
+function finish(won) {
+  if (state === 'over') return;
+  state = 'over';
+  clearTimeout(popupTimer);
+  popupEl.className = 'popup';
+  timeEl.textContent = won ? Math.max(0, Math.ceil((endTime - performance.now()) / 1000)) : '0';
+  Sound.end();
+
+  resultTitle.textContent = won ? '🏆 Saare stage poore!' : '⏰ Time khatam';
+  resultText.textContent = 'Score: ' + score +
+    '  |  Chaku lage: ' + hits +
+    '  |  Takraye: ' + clashes;
+
+  if (score > 0) {
+    resultText.textContent += '  →  +' + score + ' points mile';
+    savePoints(score);
   }
+  overlay.classList.add('show');
+}
 
-  // Score Firebase mein sabse achha score ke roop mein save hota hai (users/<uid>/knifeHitBest)
-  function saveOnline() {
-    try {
-      var u = window.firebase && firebase.auth().currentUser;
-      if (u) firebase.database().ref('users/' + u.uid + '/knifeHitBest').transaction(function (c) { return Math.max(c || 0, score); });
-    } catch (e) {}
-  }
+function update(dt, now) {
+  clock += dt;
+  kick *= 0.8;
 
-  function updateHud() {
-    $('score').textContent = score;
-    $('timeLeft').textContent = Math.max(0, Math.ceil(timeLeft));
-  }
-
-  // ---------- Update ----------
-  function update(dt) {
-    t += dt;
-    if (flash > 0) flash -= dt;
-    if (kick > 0) kick = Math.max(0, kick - dt * 30);
-    shards.forEach(function (s) { s.vy += 700 * dt; s.x += s.vx * dt; s.y += s.vy * dt; s.r += s.vr * dt; });
-    debris.forEach(function (d) { d.vy += 900 * dt; d.x += d.vx * dt; d.y += d.vy * dt; d.th += d.vth * dt; d.life -= dt; });
-    debris = debris.filter(function (d) { return d.life > 0 && d.y < H + 80; });
-    floaters.forEach(function (f) { f.life -= dt; f.y -= 30 * dt; });
-    floaters = floaters.filter(function (f) { return f.life > 0; });
-
-    if (state === 'break') {
-      bt -= dt;
-      if (bt <= 0) { shards = []; if (si === 4) end(true); else { startStage(si + 1); state = 'play'; } }
+  if (endTime) {
+    var left = Math.max(0, (endTime - now) / 1000);
+    timeEl.textContent = Math.ceil(left);
+    if (left <= 0) {
+      finish(false);
       return;
     }
-    if (state !== 'play') { rot += 0.4 * dt; return; }
-
-    timeLeft -= dt; if (frozen > 0) frozen = Math.max(0, frozen - dt);
-    if (timeLeft <= 0) { timeLeft = 0; updateHud(); return end(false); }
-    nextChange -= dt; if (nextChange <= 0) pickMotion();
-    spd += (tgt - spd) * Math.min(1, dt * 6);
-    rot += spd * dt;
-    if (fly) { fly.y -= 2800 * dt; if (fly.y <= cyNow() + stage.R) land(); }
-    updateHud();
   }
 
-  // ---------- Drawing ----------
-  function knife(tx) {                 // tip tx par, handle bahar ki taraf (+x)
-    ctx.fillStyle = '#e5ecff'; ctx.beginPath();
-    ctx.moveTo(tx, 0); ctx.lineTo(tx + 8, -4.5); ctx.lineTo(tx + 34, -4.5); ctx.lineTo(tx + 34, 4.5); ctx.lineTo(tx + 8, 4.5);
-    ctx.closePath(); ctx.fill();
-    ctx.fillStyle = '#facc15'; ctx.fillRect(tx + 34, -8, 4, 16);
-    ctx.fillStyle = '#b45309'; ctx.fillRect(tx + 38, -4, 20, 8);
-  }
+  fallers.forEach(function (f) {
+    f.vy += 2200 * dt;
+    f.x += f.vx * dt;
+    f.y += f.vy * dt;
+    f.r += 6 * dt;
+  });
 
-  // Color badalte wedge — milkar hamesha ek hi gol circle dikhta hai
-  function wedgeColor(i) {
-    return 'hsl(' + ((stage.hue + i * 38 + t * 40) % 360) + ',75%,' + (i % 2 ? 52 : 60) + '%)';
-  }
-  function wedge(R, a0, a1, col) {
-    ctx.fillStyle = col; ctx.strokeStyle = col; ctx.lineWidth = 1;
-    ctx.beginPath(); ctx.moveTo(0, 0); ctx.arc(0, 0, R, a0, a1); ctx.closePath(); ctx.fill(); ctx.stroke();
-  }
-  function drawWheel(cx, cy) {
-    var n = 8, R = stage.R;
-    ctx.save(); ctx.translate(cx, cy);
-    for (var i = 0; i < n; i++) wedge(R, rot + i * TAU / n, rot + (i + 1) * TAU / n + 0.02, wedgeColor(i));
-    ctx.strokeStyle = 'rgba(255,255,255,.55)'; ctx.lineWidth = 4;
-    ctx.beginPath(); ctx.arc(0, 0, R, 0, TAU); ctx.stroke();
-    ctx.fillStyle = '#0b1b3a'; ctx.beginPath(); ctx.arc(0, 0, R * 0.2, 0, TAU); ctx.fill();
-    ctx.restore();
-    stuck.forEach(function (a) {
-      ctx.save(); ctx.translate(cx, cy); ctx.rotate(rot + a); knife(stage.R - 12); ctx.restore();
-    });
-  }
-
-  function text(s, x, y, size, col) {
-    ctx.fillStyle = col; ctx.font = 'bold ' + size + 'px Arial'; ctx.textAlign = 'center'; ctx.fillText(s, x, y);
-  }
-
-  function draw() {
-    var r = cv.getBoundingClientRect(), s = Math.min(r.width / W, r.height / H);
-    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, cv.width, cv.height);
-    ctx.setTransform(DPR * s, 0, 0, DPR * s, DPR * (r.width - W * s) / 2, DPR * (r.height - H * s) / 2);
-    if (!stage) stage = STAGES[0];
-    var cx = W / 2, cy = cyNow() + (kick ? Math.sin(t * 90) * kick * 0.3 : 0);
-
-    if (state !== 'break') drawWheel(cx, cy);
-    shards.forEach(function (sh) {
-      ctx.save(); ctx.translate(sh.x, sh.y); ctx.rotate(sh.r); wedge(sh.R, sh.a0 - sh.r, sh.a1 - sh.r, sh.col); ctx.restore();
-    });
-    debris.forEach(function (d) { ctx.save(); ctx.translate(d.x, d.y); ctx.rotate(d.th); knife(-12); ctx.restore(); });
-
-    // Haath mein rakha chaku / udta chaku
-    if (state === 'play' || state === 'break') {
-      var ky = fly ? fly.y : H - 120;
-      if (left > 0 || fly) {
-        ctx.save(); ctx.globalAlpha = frozen > 0 && !fly ? 0.3 : 1; ctx.translate(W / 2, ky); ctx.rotate(Math.PI / 2); knife(0); ctx.restore();
+  if (state === 'play') {
+    updateSpin(dt);
+    if (flying) {
+      flying.y -= THROW_SPEED * dt;
+      var landY = cy + R - BL * PEN;
+      if (flying.y <= landY) {
+        flying.y = landY;
+        landKnife(now);
       }
     }
-    // Bache hue chaku (left side)
-    for (var i = 0; i < total; i++) {
-      ctx.fillStyle = i < left ? '#e5ecff' : 'rgba(255,255,255,.15)';
-      ctx.fillRect(10, H - 16 - i * 8, 14, 4);
+  } else if (state === 'wait') {
+    omega = 0;
+    if (now >= waitEnd) {
+      state = 'play';
+      fallers = [];
     }
-    if (frozen > 0) text(Math.ceil(frozen), W / 2, H - 200, 70, '#ff5d5d');
-    floaters.forEach(function (f) { ctx.globalAlpha = Math.min(1, f.life * 2); text(f.text, f.x, f.y, f.big ? 26 : 20, f.col); ctx.globalAlpha = 1; });
-    if (flash > 0) { ctx.fillStyle = 'rgba(255,60,60,' + flash + ')'; ctx.fillRect(0, 0, W, H); }
+  } else if (state === 'break') {
+    breakT += dt;
+    if (breakT >= 0.8) {
+      stageNo++;
+      if (stageNo >= STAGES.length) finish(true);
+      else startStage();
+    }
+  }
+}
+
+// Chaku: (tx,ty) nok hai, th us taraf jidhar mutthha hai
+function drawKnife(tx, ty, th, red) {
+  ctx.save();
+  ctx.translate(tx, ty);
+  ctx.rotate(th);
+  ctx.fillStyle = '#e5e7eb';                         // phal
+  ctx.beginPath();
+  ctx.moveTo(0, 0);
+  ctx.lineTo(BL * 0.2, -5);
+  ctx.lineTo(BL, -5);
+  ctx.lineTo(BL, 5);
+  ctx.lineTo(BL * 0.2, 5);
+  ctx.closePath();
+  ctx.fill();
+  ctx.fillStyle = '#9ca3af';                         // phal ka neeche ka hissa
+  ctx.fillRect(BL * 0.2, 0, BL * 0.8, 5);
+  ctx.fillStyle = '#facc15';                         // guard
+  ctx.fillRect(BL - 2, -9, 5, 18);
+  ctx.fillStyle = red ? '#ef4444' : '#b45309';       // mutthha
+  ctx.fillRect(BL + 3, -5, HL, 10);
+  ctx.fillStyle = '#78350f';
+  for (var i = 1; i < 4; i++) ctx.fillRect(BL + 3 + HL * i / 4 - 1.5, -5, 3, 10);
+  ctx.restore();
+}
+
+// Lakdi ka rang dheere dheere badalta aur milta hai, par dikhta hamesha ek hi gol
+function shade(h, s, l) {
+  var shift = Math.sin(clock * 0.7) * 14 + STAGES[stageNo].hue;
+  return 'hsl(' + (h + shift) + ',' + s + '%,' + l + '%)';
+}
+
+function ring(r, a, b) {
+  ctx.beginPath();
+  ctx.arc(0, 0, r, a, b);
+  ctx.stroke();
+}
+
+function disc(r) {
+  ctx.beginPath();
+  ctx.arc(0, 0, r, 0, Math.PI * 2);
+  ctx.fill();
+}
+
+// Lakdi ka gol tukda (chhaal + andar ke chhalle)
+function paintLog() {
+  ctx.fillStyle = shade(22, 65, 33);     // chhaal
+  disc(R);
+  ctx.fillStyle = shade(36, 80, 58);     // lakdi
+  disc(R * 0.9);
+  ctx.strokeStyle = shade(30, 70, 45);
+  ctx.lineWidth = R * 0.07;
+  ring(R * 0.7, 0.4, 4.6);
+  ring(R * 0.48, 2, 6);
+  ring(R * 0.26, 0, 3.6);
+  ctx.fillStyle = shade(28, 70, 40);
+  disc(R * 0.07);
+}
+
+// Stage poora: lakdi 6 tukdon mein toot kar bikharti hai
+function drawPieces() {
+  var n = 6, step = Math.PI * 2 / n;
+  ctx.globalAlpha = Math.max(0, 1 - breakT / 0.8);
+  for (var k = 0; k < n; k++) {
+    var mid = rot + k * step + step / 2;
+    ctx.save();
+    ctx.translate(cx + Math.cos(mid) * breakT * 200, cy + Math.sin(mid) * breakT * 200 + breakT * breakT * 500);
+    ctx.rotate(rot + (k % 2 ? 1 : -1) * breakT * 2.2);
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, R * 1.2, k * step, (k + 1) * step);
+    ctx.closePath();
+    ctx.clip();
+    paintLog();
+    ctx.restore();
+  }
+  ctx.globalAlpha = 1;
+}
+
+function draw(now) {
+  var i;
+  var g = ctx.createLinearGradient(0, 0, 0, H);
+  g.addColorStop(0, '#0e5560');
+  g.addColorStop(1, '#061a2b');
+  ctx.fillStyle = g;
+  ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = 'rgba(255,255,255,0.035)';
+  for (var x = 0; x < W; x += 46) ctx.fillRect(x, 0, 18, H);
+
+  var s = STAGES[stageNo];
+  var breaking = state === 'break';
+
+  ctx.save();
+  ctx.translate(0, kick);
+
+  // lakdi mein lage chaku (lakdi ke neeche, taki nok andar chhupi rahe)
+  stuck.forEach(function (a) {
+    var th = a + rot, d = R - BL * PEN, ox = 0, oy = 0, tw = 0;
+    ctx.globalAlpha = 1;
+    if (breaking) {
+      ox = Math.cos(th) * breakT * 260;
+      oy = Math.sin(th) * breakT * 260 + breakT * breakT * 500;
+      tw = breakT * 2;
+      ctx.globalAlpha = Math.max(0, 1 - breakT / 0.8);
+    }
+    drawKnife(cx + Math.cos(th) * d + ox, cy + Math.sin(th) * d + oy, th + tw, false);
+  });
+  ctx.globalAlpha = 1;
+
+  // udta chaku: lakdi mein ghuste hi lakdi ke neeche
+  if (flying && flying.y < cy + R) drawKnife(cx, flying.y, Math.PI / 2, false);
+
+  if (breaking) {
+    drawPieces();
+  } else {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(rot);
+    paintLog();
+    ctx.restore();
+    if (state === 'wait') {
+      ctx.fillStyle = 'rgba(239,68,68,0.3)';
+      ctx.beginPath();
+      ctx.arc(cx, cy, R, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+  ctx.restore();
+
+  if (flying && flying.y >= cy + R) drawKnife(cx, flying.y, Math.PI / 2, false);
+
+  fallers.forEach(function (f) {
+    drawKnife(f.x, f.y, Math.PI / 2 + f.r, true);
+  });
+
+  if (state === 'play' && !flying && knivesLeft > 0) drawKnife(cx, startY, Math.PI / 2, false);
+
+  // baayen taraf chaku ginti (kharch hue chaku kaale)
+  var n = s.knives, sp = Math.min(20, H * 0.6 / n);
+  ctx.lineWidth = 4;
+  for (i = 0; i < n; i++) {
+    var yy = H * 0.14 + i * sp;
+    ctx.strokeStyle = i < n - knivesLeft ? 'rgba(0,0,0,0.45)' : '#a5e3f2';
+    ctx.beginPath();
+    ctx.moveTo(12, yy + 6);
+    ctx.lineTo(24, yy - 4);
+    ctx.stroke();
   }
 
-  var last = 0;
-  function loop(ts) {
-    var dt = Math.min(0.05, (ts - last) / 1000 || 0); last = ts;
-    update(dt); draw(); requestAnimationFrame(loop);
+  // upar 5 stage ke bindu
+  for (i = 0; i < 5; i++) {
+    ctx.fillStyle = i <= stageNo ? '#facc15' : 'rgba(255,255,255,0.3)';
+    ctx.beginPath();
+    ctx.arc(W / 2 + (i - 2) * 18, 16, i === stageNo ? 6 : 4, 0, Math.PI * 2);
+    ctx.fill();
   }
 
-  // ---------- Controls ----------
-  cv.addEventListener('pointerdown', function (e) { e.preventDefault(); throwKnife(); });
-  document.addEventListener('keydown', function (e) { if (e.code === 'Space') { e.preventDefault(); throwKnife(); } });
-  $('againBtn').addEventListener('click', startGame);
+  ctx.textAlign = 'center';
 
-  resize(); stage = STAGES[0]; stuck = []; left = 0; rot = 0; spd = 0; tgt = 0; nextChange = 0;
-  requestAnimationFrame(loop);
-})();
+  if (hintOn) {
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = 'bold 17px Arial';
+    ctx.fillText('TAP karo, chaku maaro', W / 2, H * 0.62);
+    ctx.font = '14px Arial';
+    ctx.fillText('Chaku se chaku na takraye!', W / 2, H * 0.62 + 24);
+  }
+
+  if (state === 'wait') {
+    var secs = Math.max(0, Math.ceil((waitEnd - now) / 1000));
+    ctx.fillStyle = '#f87171';
+    ctx.font = 'bold 22px Arial';
+    ctx.fillText('Chaku takra gaya! Ruko:', W / 2, H * 0.6);
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 64px Arial';
+    ctx.fillText(secs, W / 2, H * 0.6 + 70);
+  }
+}
+
+function loop(now) {
+  var dt = Math.min((now - lastTime) / 1000, 0.033);
+  lastTime = now;
+  update(dt, now);
+  draw(now);
+  if (state !== 'over') loopId = requestAnimationFrame(loop);
+}
+
+canvas.addEventListener('pointerdown', function (e) {
+  e.preventDefault();
+  throwKnife();
+});
+
+document.addEventListener('keydown', function (e) {
+  if (e.code === 'Space') {
+    e.preventDefault();
+    throwKnife();
+  }
+});
+
+againBtn.addEventListener('click', newGame);
+
+newGame();

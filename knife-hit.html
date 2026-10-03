@@ -2,36 +2,40 @@
 <html lang="hi">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Knife Hit</title>
   <link rel="stylesheet" href="knife-hit.css">
 </head>
 <body>
 
   <div class="app">
+
     <header class="header">
       <a href="play.html" class="back-btn">←</a>
       <h1>Knife Hit</h1>
-      <span class="pts">⭐ Best <b id="totalPoints">0</b></span>
+      <span class="pts">⭐ <b id="totalPoints">0</b></span>
     </header>
 
     <section class="hud">
       <div class="hud-box">Score<br><b id="score">0</b></div>
       <div class="hud-box">Time<br><b id="timeLeft">60</b>s</div>
-      <div class="hud-box">Stage<br><b id="stageNo">1</b>/5</div>
+      <div class="hud-box">Stage<br><b id="stage">1</b>/5</div>
+      <div class="hud-box">Knives<br><b id="knives">0</b></div>
     </section>
 
     <section class="stage">
       <canvas id="game"></canvas>
+      <div class="popup" id="popup"></div>
     </section>
+
   </div>
 
-  <!-- Start / Result -->
-  <div class="overlay show" id="overlay">
+  <!-- Result -->
+  <div class="overlay" id="overlay">
     <div class="result">
-      <h2 id="resultTitle">🔪 Knife Hit</h2>
-      <p id="resultText">Screen par tap karo aur chaku ghoomte circle par maaro. Chaku se chaku takraya to 5 second ruko!</p>
-      <button class="yellow-btn" id="againBtn">Start</button>
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+      <button class="yellow-btn" id="againBtn">Play Again</button>
       <a href="play.html" class="back-link">Wapas jao</a>
     </div>
   </div>
@@ -40,6 +44,7 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
   <script src="firebase-config.js"></script>
+  <script src="sound-knife.js"></script>
   <script src="knife-hit.js"></script>
 </body>
 </html>
