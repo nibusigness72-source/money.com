@@ -120,6 +120,7 @@
 
   // ---------- Tap ----------
   function tap() {
+    FlipSound.unlock();
     if (state !== 'play') return;
     vy = -CONFIG.TAP_POWER;
   }
@@ -183,10 +184,12 @@
             var mult = clean ? combo + 1 : 1;
             var pts = CONFIG.POINTS * mult;
             score += pts; hoops++;
+            FlipSound.pass(clean, mult);
             floaters.push({ x: BX + 70, y: y - 30, text: '+' + pts + (clean ? ' PERFECT x' + mult : ''), life: 1.0, col: clean ? '#b45309' : '#16a34a', big: clean ? 1 : 0 });
             if (needUp) vy = -60;
             if (r.type === 'shield') {
               shield = true;
+              FlipSound.shield();
               floaters.push({ x: BX + 70, y: y - 60, text: '🛡 SHIELD!', life: 1.2, col: '#0891b2', big: 1 });
             }
           } else {
@@ -219,6 +222,7 @@
     // neeche zameen par gira
     if (y >= GROUND - BR) {
       y = GROUND - BR;
+      FlipSound.fall();
       miss('Neeche gira!');
     }
     updateHud();

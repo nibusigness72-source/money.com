@@ -588,6 +588,7 @@
   function clearStep(res, chain) {
     var P = SETTINGS.points;
     var count = res.cells.length;
+    GemSound.clear(res, chain);
 
     // ---- POINTS yahan jodte hain (values neeche SETTINGS mein hain) ----
     // ---- POINTS yahan jodte hain (values neeche SETTINGS mein hain) ----
@@ -744,6 +745,7 @@
 
   function bindInput() {
     el.board.addEventListener('pointerdown', function (e) {
+      GemSound.unlock();
       if (!canInput()) return;
       var p = localPos(e), cell = cellAt(p);
       if (!cell) return;
