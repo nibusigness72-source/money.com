@@ -49,7 +49,7 @@ document.querySelectorAll('.nav-item').forEach(function (item) {
 document.querySelectorAll('.play-btn').forEach(function (btn) {
   btn.addEventListener('click', function () {
     var game = btn.getAttribute('data-game');
-    var ready = ['flip-ball','fruit-cut' ,'stack-tower', 'knife-hit'];
+    var ready = ['flip-ball','fruit-cut' ,'stack-tower', 'knife-hit','gem-blast'];
     if (ready.indexOf(game) !== -1) {
       window.location.href = game + '.html';
     } else {
@@ -80,16 +80,4 @@ if (logoutBtn) {
 // home.html wale saare links ko index.html par bhejo (home page ka naam index.html hai)
 document.querySelectorAll('a[href="home.html"]').forEach(function (a) {
   a.setAttribute('href', 'index.html');
-});
-// Play Now button: game ka page kholega
-document.querySelectorAll('.play-btn').forEach(function (btn) {
-  btn.addEventListener('click', function () {
-    var game = btn.getAttribute('data-game');
-  var ready = ['flip-ball','fruit-cut', 'stack-tower', 'knife-hit'];
-    if (ready.indexOf(game) !== -1) {
-      window.location.href = game + '.html';
-    } else {
-      alert(game + ' abhi ban raha hai');
-    }
-  });
 });

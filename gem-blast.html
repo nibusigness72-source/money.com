@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Gem Blast - PLAY & WIN</title>
+  <link rel="stylesheet" href="gem-blast.css">
+</head>
+<body>
+
+  <main class="gb" id="gb">
+
+    <!-- Top bar -->
+    <header class="hud">
+      <div class="hud-row">
+        <a href="play.html" class="hud-back" aria-label="Back to games">←</a>
+        <div class="hud-title">Gem Blast</div>
+        <div class="hud-time" id="timeBox"><b id="time">60</b><span>sec</span></div>
+      </div>
+      <div class="hud-row hud-row-2">
+        <div class="hud-score"><span>Score</span><b id="score">0</b></div>
+        <div class="hud-max" id="maxWrap">
+          <span id="maxText">Max 300</span>
+          <div class="bar"><i id="scoreBar"></i></div>
+        </div>
+      </div>
+      <div class="timebar"><i id="timeFill"></i></div>
+    </header>
+
+    <!-- Board -->
+    <div class="board-wrap" id="boardWrap">
+      <div class="board-frame">
+        <canvas id="board"></canvas>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <!-- Start -->
+    <section class="overlay" id="startOv">
+      <div class="panel">
+        <h1>Gem Blast</h1>
+        <p class="panel-sub">Match gems before the time runs out.</p>
+        <ul class="rules">
+          <li>Swap two neighbouring gems to match 3 or more of the same colour.</li>
+          <li>Every gem you break gives <b id="rulePer">1</b> point<span id="ruleMaxWrap">. Maximum <b id="ruleMax">300</b></span>.</li>
+          <li class="rule-special">
+            <canvas id="icoLine"></canvas>
+            <span>Match 4 in a line to make a line gem. When it breaks, its whole row or column breaks.</span>
+          </li>
+          <li class="rule-special">
+            <canvas id="icoRainbow"></canvas>
+            <span>Match 5 in a line to make a rainbow gem. Swap it with any gem and every gem of that colour breaks.</span>
+          </li>
+          <li>You have <b id="ruleTime">60</b> seconds.</li>
+        </ul>
+        <button class="btn-main" id="startBtn">Start</button>
+      </div>
+    </section>
+
+    <!-- Result -->
+    <section class="overlay hidden" id="endOv">
+      <div class="panel">
+        <h1 id="endTitle">Time's up</h1>
+        <div class="end-score"><b id="endScore">0</b><span id="endMax">points</span></div>
+        <div class="end-stats">
+          <div><b id="endGems">0</b><span>gems broken</span></div>
+          <div><b id="endMoves">0</b><span>moves</span></div>
+          <div><b id="endChain">0</b><span>best chain</span></div>
+        </div>
+        <button class="btn-main" id="againBtn">Play again</button>
+        <a class="btn-ghost" href="play.html">Back to games</a>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="gem-blast.js"></script>
+</body>
+</html>
