@@ -35,19 +35,14 @@ firebase.auth().onAuthStateChanged(function (user) {
 
     nameEl.textContent = data.name || 'Player';
     if (data.photo) avatarEl.src = data.photo;
-    db.ref('leaderboard/' + user.uid).update({
-      name: data.name || null,
-      playerId: data.playerId || null
-    });
 
     if (data.playerId) {
       idEl.textContent = 'ID: ' + data.playerId;
     } else {
       // Pehli baar: apna 6 digit ID banao aur save karo
-var newId = randomId();
+      var newId = randomId();
       ref.child('playerId').set(newId).then(function () {
         idEl.textContent = 'ID: ' + newId;
-        db.ref('leaderboard/' + user.uid + '/playerId').set(newId);
       });
     }
 

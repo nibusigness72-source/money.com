@@ -131,11 +131,6 @@
             week: st.week ? st.week.points : 0,
             month: st.month ? st.month.points : 0
           };
-          firebase.database().ref('leaderboard/' + user.uid + '/stats').set({
-            day: st.day || null,
-            week: st.week || null,
-            month: st.month || null
-          });
           toast(true, '✅ ' + game + ': +' + pts + ' point save hue (aaj ' + out.day + ')');
           return out;
         });

@@ -1,24 +1,113 @@
 // leaderboard.js
-// Ab yeh FAKE/random data nahi, Firebase ke asli users/ data se Daily/Weekly/Monthly
-// leaderboard banata hai, real-time (jaise hi kisi ka score badlega, list khud-ba-khud update hogi)
+// Daily/Weekly/Monthly aur Top 10/50/100 tabs ke hisaab se list badalti hai
 
 var state = { period: 'monthly', count: 10 };
 
-// Sirf inaam (reward) table — fake players banane ke liye nahi, sirf ₹ dikhane ke liye
+// Monthly ke pehle 10 players bilkul wahi jo HTML mein hain
+var originals = [
+  { name: 'RohitKing777', avatar: '🧑', points: 125000 },
+  { name: 'QueenGamer',   avatar: '👩', points: 110500 },
+  { name: 'XxLegendxX',   avatar: '🧔', points: 98750 },
+  { name: 'GamingStar',   avatar: '🧑', points: 87420 },
+  { name: 'TechNilesh',   avatar: '🧑', points: 76300 },
+  { name: 'ProPlayer',    avatar: '👩', points: 70210 },
+  { name: 'FreeFireBoy',  avatar: '🧑', points: 65980 },
+  { name: 'SilentKiller', avatar: '🧑', points: 62450 },
+  { name: 'NoobMaster',   avatar: '🧑', points: 58760 },
+  { name: 'GameChanger',  avatar: '🧑', points: 55320 }
+];
+
 var config = {
-  monthly: { rewards: [100000, 50000, 25000, 15000, 10000, 7500, 5000, 3000, 2000, 1000], mid: 500 },
-  weekly:  { rewards: [25000, 12000, 6000, 4000, 2500, 2000, 1500, 1000, 750, 500], mid: 200 },
-  daily:   { rewards: [5000, 2500, 1200, 800, 500, 400, 300, 200, 150, 100], mid: 50 }
+  monthly: {
+    seed: 11, topPoints: 125000, stepMin: 150, stepMax: 600,
+    rewards: [100000, 50000, 25000, 15000, 10000, 7500, 5000, 3000, 2000, 1000],
+    mid: 500
+  },
+  weekly: {
+    seed: 22, topPoints: 32000, stepMin: 100, stepMax: 300,
+    rewards: [25000, 12000, 6000, 4000, 2500, 2000, 1500, 1000, 750, 500],
+    mid: 200
+  },
+  daily: {
+    seed: 33, topPoints: 6500, stepMin: 20, stepMax: 90,
+    rewards: [5000, 2500, 1200, 800, 500, 400, 300, 200, 150, 100],
+    mid: 50
+  }
 };
 
+var prefixes = ['Pro', 'King', 'Dark', 'Fire', 'Ninja', 'Sniper', 'Rapid', 'Alpha', 'Lucky', 'Turbo'];
+var suffixes = ['Gamer', 'Boy', 'Star', 'Killer', 'Master', 'Hero', 'Wolf', 'X', 'Pilot', 'Rider'];
 var avatars = ['🧑', '👩', '🧔'];
 
-var allPlayers = [];      // current period ke hisaab se sorted, sabhi real users
-var myRankData = null;    // login kiye hue user ka apna rank + score
-var latestUsersSnapshot = null;
+var cache = {};
+
+// Same seed = same list, isliye tab dubara dabane par list nahi badlegi
+function mulberry32(a) {
+  return function () {
+    var t = a += 0x6D2B79F5;
+    t = Math.imul(t ^ t >>> 15, t | 1);
+    t ^= t + Math.imul(t ^ t >>> 7, t | 61);
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+
+function buildPlayers(period) {
+  var cfg = config[period];
+  var rand = mulberry32(cfg.seed);
+  var players = [];
+  var pool = [];
+  var i, j;
+
+  for (i = 0; i < prefixes.length; i++) {
+    for (j = 0; j < suffixes.length; j++) {
+      pool.push(prefixes[i] + suffixes[j]);
+    }
+  }
+
+  // Monthly mein original 10 upar fix, baaki naam mix
+  // Daily/Weekly mein original naam bhi pool mein mix ho jaate hain
+  if (period !== 'monthly') {
+    originals.forEach(function (o) { pool.push(o.name); });
+  }
+
+  // Naam shuffle
+  for (i = pool.length - 1; i > 0; i--) {
+    j = Math.floor(rand() * (i + 1));
+    var tmp = pool[i]; pool[i] = pool[j]; pool[j] = tmp;
+  }
+
+  var prev = cfg.topPoints;
+  var start = 0;
+
+  if (period === 'monthly') {
+    originals.forEach(function (o) { players.push(o); });
+    prev = originals[originals.length - 1].points;
+    start = originals.length;
+  }
+
+  for (i = start; i < 100; i++) {
+    if (i > 0) {
+      prev = prev - Math.round(cfg.stepMin + rand() * (cfg.stepMax - cfg.stepMin));
+    }
+    players.push({
+      name: pool[i - start],
+      avatar: avatars[Math.floor(rand() * avatars.length)],
+      points: Math.max(prev, 1)
+    });
+  }
+
+  return players;
+}
+
+function getPlayers(period) {
+  if (!cache[period]) {
+    cache[period] = buildPlayers(period);
+  }
+  return cache[period];
+}
 
 function fmt(n) {
-  return (n || 0).toLocaleString('en-IN');
+  return n.toLocaleString('en-IN');
 }
 
 function rewardFor(period, rank) {
@@ -28,47 +117,9 @@ function rewardFor(period, rank) {
   return '-';
 }
 
-// UID se hamesha wahi avatar (random nahi badlega)
-function avatarFor(uid) {
-  var sum = 0;
-  for (var i = 0; i < uid.length; i++) sum += uid.charCodeAt(i);
-  return avatars[sum % avatars.length];
-}
-
-function nameFor(uid, data) {
-  if (data.name) return data.name;
-  if (data.playerId) return 'Player' + data.playerId;
-  return 'Player' + uid.slice(0, 5);
-}
-
-// score.js ke stats.day/week/month se, sirf CURRENT period ka point nikalo
-// (agar key match nahi karti, matlab purana data hai, is period mein 0 point)
-function pointsForPeriod(data, period, k) {
-  var st = (data.stats || {})[period];
-  if (st && st.key === k[period]) return st.points || 0;
-  return 0;
-}
-
-function buildPlayers(usersObj, period, k) {
-  var list = [];
-  Object.keys(usersObj || {}).forEach(function (uid) {
-    var data = usersObj[uid] || {};
-    list.push({
-      uid: uid,
-      name: nameFor(uid, data),
-      avatar: avatarFor(uid),
-      points: pointsForPeriod(data, period, k)
-    });
-  });
-  // Sirf wahi dikhao jinke is period mein kam se kam 1 point hai
-  list = list.filter(function (p) { return p.points > 0; });
-  list.sort(function (a, b) { return b.points - a.points; });
-  return list;
-}
-
 function render() {
   var list = document.querySelector('.list');
-  var data = allPlayers.slice(0, state.count);
+  var data = getPlayers(state.period).slice(0, state.count);
   var html = '';
 
   data.forEach(function (p, i) {
@@ -89,59 +140,12 @@ function render() {
       '</div>';
   });
 
-  if (!data.length) {
-    html = '<div class="empty-msg">Is period mein abhi tak koi score nahi hai</div>';
-  }
-
   list.innerHTML = html;
-  renderMyRank();
-}
-
-// Neeche wali sticky "Apna Rank" bar bharo
-function renderMyRank() {
-  var bar = document.getElementById('myRankBar');
-  if (!bar) return;
-
-  if (!myRankData) {
-    bar.innerHTML = '<span class="my-rank-msg">Login karke khelo, yahan apna rank dikhega</span>';
-    return;
-  }
-
-  bar.innerHTML =
-    '<span class="c-rank">' + myRankData.rank + '</span>' +
-    '<span class="c-player"><i class="avatar">' + myRankData.avatar + '</i>' + myRankData.name + ' (Aap)</span>' +
-    '<span class="c-points">' + fmt(myRankData.points) + '</span>' +
-    '<span class="c-reward">' + rewardFor(state.period, myRankData.rank) + '</span>';
-}
-
-function computeMyRank(uid) {
-  if (!uid) { myRankData = null; return; }
-  var idx = -1;
-  for (var i = 0; i < allPlayers.length; i++) {
-    if (allPlayers[i].uid === uid) { idx = i; break; }
-  }
-  if (idx === -1) { myRankData = null; return; }
-  myRankData = {
-    rank: idx + 1,
-    name: allPlayers[idx].name,
-    avatar: allPlayers[idx].avatar,
-    points: allPlayers[idx].points
-  };
 }
 
 function setActive(buttons, clicked) {
   buttons.forEach(function (b) { b.classList.remove('active'); });
   clicked.classList.add('active');
-}
-
-// Firebase ka naya data aate hi (ya tab/period badalte hi) sort+render dobara karo
-function refreshFromCache() {
-  if (!latestUsersSnapshot) return;
-  var k = (window.PWScore && PWScore.keys) ? PWScore.keys(Date.now()) : { day: '', week: '', month: '' };
-  allPlayers = buildPlayers(latestUsersSnapshot, state.period, k);
-  var myUid = (firebase.auth().currentUser) ? firebase.auth().currentUser.uid : null;
-  computeMyRank(myUid);
-  render();
 }
 
 // Daily / Weekly / Monthly tabs
@@ -150,7 +154,7 @@ periodBtns.forEach(function (btn) {
   btn.addEventListener('click', function () {
     state.period = btn.textContent.trim().toLowerCase();
     setActive(periodBtns, btn);
-    refreshFromCache();
+    render();
   });
 });
 
@@ -164,13 +168,4 @@ topBtns.forEach(function (btn) {
   });
 });
 
-// 🔥 Real-time: Firebase ke 'users' mein kisi ka bhi score badlega, list khud-ba-khud refresh hogi
-firebase.database().ref('leaderboard').on('value', function (snap) {
-  latestUsersSnapshot = snap.val() || {};
-  refreshFromCache();
-});
-
-// Login/Logout hone par bhi "Apna Rank" turant update ho
-firebase.auth().onAuthStateChanged(function () {
-  refreshFromCache();
-});
+render();
