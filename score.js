@@ -1,4 +1,4 @@
-// score.js  -  Sabhi games ke point ek hi jagah se save karne wali file
+// score.js  v2  -  Sabhi games ke point ek hi jagah se save karne wali file
 //
 // Har game ke ant mein sirf ek line likhni hai:
 //     PWScore.save('game-ka-naam', score);
@@ -9,12 +9,35 @@
 //   stats/day                   -> aaj ke kul point   (subah 8 baje se agle din subah 8 baje tak)
 //   stats/week                  -> is hafte ke kul point (Somwar subah 8 baje se agle Somwar subah 8 baje tak)
 //   stats/month                 -> is mahine ke kul point (1 tarikh subah 8 baje se agle mahine ki 1 tarikh subah 8 baje tak)
+//
+// v2: save hone par neeche ek chhota message dikhta hai (hara = save hua, laal = nahi hua + wajah).
 (function () {
+  var VERSION = 'v2';
   var IST = 5.5 * 3600 * 1000;   // India ka samay (UTC se aage)
   var CUT = 8 * 3600 * 1000;     // naya din subah 8 baje shuru hota hai
 
   function pad(n) { return n < 10 ? '0' + n : '' + n; }
   function ymd(d) { return d.getUTCFullYear() + '-' + pad(d.getUTCMonth() + 1) + '-' + pad(d.getUTCDate()); }
+
+  // Screen par chhota message (hara = theek, laal = galti)
+  function toast(ok, text) {
+    try {
+      var el = document.getElementById('pw-toast');
+      if (!el) {
+        el = document.createElement('div');
+        el.id = 'pw-toast';
+        el.style.cssText = 'position:fixed;left:50%;bottom:18px;transform:translateX(-50%);max-width:90%;' +
+          'padding:10px 14px;border-radius:10px;font:13px/1.4 Arial,sans-serif;color:#fff;z-index:99999;' +
+          'text-align:center;pointer-events:none;';
+        document.body.appendChild(el);
+      }
+      el.style.background = ok ? '#15803d' : '#b91c1c';
+      el.textContent = text;
+      el.style.display = 'block';
+      clearTimeout(el._t);
+      el._t = setTimeout(function () { el.style.display = 'none'; }, ok ? 4000 : 15000);
+    } catch (e) {}
+  }
 
   // Server ka samay (phone ki ghadi badalne se kuch nahi hoga)
   function serverNow() {
@@ -25,6 +48,25 @@
     } catch (e) {
       return Promise.resolve(Date.now());
     }
+  }
+
+  // Login wala user milne tak (zyada se zyada 5 second) ruko
+  function waitForUser() {
+    var a = firebase.auth();
+    if (a.currentUser) return Promise.resolve(a.currentUser);
+    return new Promise(function (resolve) {
+      var done = false, off = function () {};
+      off = a.onAuthStateChanged(function (u) {
+        if (done || !u) return;
+        done = true; off(); resolve(u);
+      });
+      setTimeout(function () {
+        if (done) return;
+        done = true;
+        try { off(); } catch (e) {}
+        resolve(null);
+      }, 5000);
+    });
   }
 
   // Samay se aaj / hafta / mahina ki "chaabi" (key) nikalo.
@@ -61,32 +103,44 @@
   }
 
   // game = game ka naam (jaise 'knife-hit'), pts = is baar ke point
-  // Wapas milta hai: { total, day, week, month } ya login na ho to false
+  // Wapas milta hai: { total, day, week, month } ya save na ho paye to false
   function save(game, pts) {
     pts = Math.max(0, Math.floor(+pts || 0));
-    var user = firebase.auth().currentUser;
-    if (!user) return Promise.resolve(false);
-    var base = firebase.database().ref('users/' + user.uid);
+    if (!window.firebase || !firebase.auth || !firebase.database) {
+      toast(false, '❌ ' + game + ': Firebase load nahi hua (score.js ' + VERSION + ')');
+      return Promise.resolve(false);
+    }
 
-    return serverNow().then(function (now) {
-      var k = keys(now);
-      return Promise.all([
-        base.child('stats').transaction(function (s) { return addToStats(s, game, pts, k); }),
-        base.child('points').transaction(function (c) { return (c || 0) + pts; })
-      ]).then(function (res) {
-        var st = res[0].snapshot.val() || {};
-        return {
-          total: res[1].snapshot.val() || 0,
-          day: st.day ? st.day.points : 0,
-          week: st.week ? st.week.points : 0,
-          month: st.month ? st.month.points : 0
-        };
+    return waitForUser().then(function (user) {
+      if (!user) {
+        toast(false, '❌ ' + game + ': save nahi hua, login nahi mila. Pehle login karo.');
+        return false;
+      }
+      var base = firebase.database().ref('users/' + user.uid);
+
+      return serverNow().then(function (now) {
+        var k = keys(now);
+        return Promise.all([
+          base.child('stats').transaction(function (s) { return addToStats(s, game, pts, k); }),
+          base.child('points').transaction(function (c) { return (c || 0) + pts; })
+        ]).then(function (res) {
+          var st = res[0].snapshot.val() || {};
+          var out = {
+            total: res[1].snapshot.val() || 0,
+            day: st.day ? st.day.points : 0,
+            week: st.week ? st.week.points : 0,
+            month: st.month ? st.month.points : 0
+          };
+          toast(true, '✅ ' + game + ': +' + pts + ' point save hue (aaj ' + out.day + ')');
+          return out;
+        });
       });
     }).catch(function (e) {
       console.error('PWScore.save fail:', e);
+      toast(false, '❌ ' + game + ': save nahi hua (' + ((e && (e.code || e.message)) || e) + ')');
       return false;
     });
   }
 
-  window.PWScore = { save: save, keys: keys };
+  window.PWScore = { save: save, keys: keys, version: VERSION };
 })();
