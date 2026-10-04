@@ -131,18 +131,7 @@
             week: st.week ? st.week.points : 0,
             month: st.month ? st.month.points : 0
           };
-          // Public leaderboard (board/<uid>) mein bhi naya point daalo
-          try {
-            base.child('name').once('value').then(function (n) {
-              return base.child('playerId').once('value').then(function (p) {
-                return firebase.database().ref('board/' + user.uid).set({
-                  name: n.val() || '', playerId: p.val() || '',
-                  day: st.day || null, week: st.week || null, month: st.month || null,
-                  updated: firebase.database.ServerValue.TIMESTAMP
-                });
-              });
-            }).catch(function () {});
-          } catch (e) {}
+
           toast(true, '✅ ' + game + ': +' + pts + ' point save hue (aaj ' + out.day + ')');
           return out;
         });
