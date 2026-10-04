@@ -215,31 +215,6 @@ body {
 .menu-item.logout .m-text { color: var(--red); }
 .menu-item.logout .m-icon { background: var(--red); border-color: var(--red); }
 
-/* Fair Play */
-.fair {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background: linear-gradient(135deg, #2a2208, #3b2f0a);
-  border: 1px solid var(--yellow);
-  border-radius: 12px;
-  padding: 14px;
-}
-
-.fair-icon { font-size: 30px; }
-
-.fair-text {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--yellow);
-  gap: 3px;
-}
-
-.fair-crown { font-size: 24px; }
 
 /* Bottom Nav */
 .bottom-nav {

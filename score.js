@@ -162,6 +162,10 @@
             month: st.month ? st.month.points : 0
           };
           writeBoard(user, k, pts);
+          if (pts > 0) {                                   // history ke liye: kaun sa game, kitne point, kab
+            base.child('history').push({ type: 'game', game: game, points: pts, time: firebase.database.ServerValue.TIMESTAMP })
+              .catch(function (e) { console.warn('history likhna fail', e); });
+          }
           toast(true, '✅ ' + game + ': +' + pts + ' point save hue (aaj ' + out.day + ')');
           return out;
         });

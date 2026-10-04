@@ -382,6 +382,9 @@
             if (!r.committed) return;
             return creditPoints(user, REWARD).then(function () {
               total += REWARD;
+              db.ref('users/' + user.uid + '/history').push({    // history ke liye: dost ka naam, point, kab
+                type: 'referral', points: REWARD, from: String((entries[id] && entries[id].n) || 'Dost').slice(0, 20), time: TS()
+              }).catch(function (e) { console.warn('history likhna fail', e); });
               toast('🎉 Dost ne ' + minutesText() + ' khel liye! +' + REWARD + ' points mile.');
             });
           });

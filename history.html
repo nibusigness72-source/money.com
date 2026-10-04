@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game History</title>
+  <link rel="stylesheet" href="history.css">
+</head>
+<body>
+
+  <div class="app">
+
+    <!-- Upar: back button aur PLAY&WIN -->
+    <header class="topbar">
+      <a href="settings.html" class="back-btn">←</a>
+      <div class="logo">
+        <span class="crown">👑</span>
+        <span class="logo-text">PLAY&amp;WIN</span>
+      </div>
+      <span class="top-space"></span>
+    </header>
+
+    <!-- Title -->
+    <section class="title-box">
+      <h1>Game History</h1>
+      <p>Aapke game aur referral ke saare point</p>
+    </section>
+
+    <!-- History list (history.js yahan entry daalta hai) -->
+    <section class="h-list" id="hList">
+      <div class="h-empty">Load ho raha hai...</div>
+    </section>
+
+    <button class="more-btn" id="moreBtn" style="display:none">View More ⌄</button>
+
+  </div>
+
+  <!-- Bottom Navigation -->
+  <nav class="bottom-nav">
+    <a href="index.html" class="nav-item">
+      <span class="icon">🏠</span>
+      <span>Home</span>
+    </a>
+    <a href="play.html" class="nav-item">
+      <span class="icon">🎮</span>
+      <span>Play</span>
+    </a>
+    <a href="leaderboard.html" class="nav-item">
+      <span class="icon">🏆</span>
+      <span>Leaderboard</span>
+    </a>
+    <a href="referral.html" class="nav-item">
+      <span class="icon">👥</span>
+      <span>Referral</span>
+    </a>
+    <a href="settings.html" class="nav-item active">
+      <span class="icon">⋯</span>
+      <span>More</span>
+    </a>
+  </nav>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="history.js"></script>
+</body>
+</html>

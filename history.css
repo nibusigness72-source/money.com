@@ -1,0 +1,248 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+:root {
+  --card: #0f1b47;
+  --border: #1f3a8a;
+  --cyan: #22d3ee;
+  --yellow: #facc15;
+  --green: #22c55e;
+  --text: #ffffff;
+  --muted: #9fb0d9;
+}
+
+body {
+  background: linear-gradient(180deg, #060c24, #0a1233);
+  color: var(--text);
+  min-height: 100vh;
+  padding-bottom: 90px;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+/* Upar ki patti: back + PLAY&WIN */
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 2px 10px;
+}
+
+.back-btn,
+.top-space {
+  width: 42px;
+  height: 42px;
+  flex-shrink: 0;
+}
+
+.back-btn {
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--card);
+  color: var(--text);
+  text-decoration: none;
+  font-size: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.crown { font-size: 16px; }
+
+.logo-text {
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: 1px;
+}
+
+/* Title */
+.title-box {
+  padding: 6px 4px 14px;
+}
+
+.title-box h1 { font-size: 22px; }
+
+.title-box p {
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* List */
+.h-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.h-day {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--cyan);
+  letter-spacing: 0.5px;
+  padding: 6px 4px 0;
+}
+
+.h-row {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 12px;
+  cursor: pointer;
+}
+
+.h-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.h-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.h-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.h-name {
+  font-size: 16px;
+  font-weight: 700;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.h-sub {
+  font-size: 13px;
+  color: var(--muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.h-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  flex-shrink: 0;
+}
+
+.h-pts {
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--green);
+}
+
+.h-time {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.h-arrow {
+  font-size: 22px;
+  color: var(--muted);
+  transition: transform 0.2s;
+}
+
+.h-row.open .h-arrow { transform: rotate(90deg); }
+
+.h-detail {
+  display: none;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.h-row.open .h-detail { display: block; }
+
+/* Khali / error sandesh */
+.h-empty {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 26px 14px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* View More */
+.more-btn {
+  width: 100%;
+  margin-top: 12px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.more-btn:disabled { opacity: 0.5; }
+
+/* Bottom Nav (baaki pages jaisa) */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  max-width: 480px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-around;
+  background: #070e2b;
+  border-top: 1px solid var(--border);
+  padding: 8px 4px;
+}
+
+.nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 11px;
+  padding: 4px 10px;
+  border-radius: 10px;
+}
+
+.nav-item .icon { font-size: 20px; }
+
+.nav-item.active {
+  color: var(--yellow);
+  border: 1px solid var(--yellow);
+}
