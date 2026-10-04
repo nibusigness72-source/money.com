@@ -12,7 +12,7 @@
 //
 // v2: save hone par neeche ek chhota message dikhta hai (hara = save hua, laal = nahi hua + wajah).
 (function () {
-  var VERSION = 'v2';
+  var VERSION = 'v3';
   var IST = 5.5 * 3600 * 1000;   // India ka samay (UTC se aage)
   var CUT = 8 * 3600 * 1000;     // naya din subah 8 baje shuru hota hai
 
@@ -102,6 +102,36 @@
     return s;
   }
 
+  // Leaderboard ke liye: sirf naam aur point (phone ya photo nahi)
+  // public "board" mein likho
+  function writeBoard(user, k, pts) {
+    var db = firebase.database();
+    var uid = user.uid;
+    var TS = firebase.database.ServerValue.TIMESTAMP;
+    db.ref('users/' + uid + '/name')
+      .once('value')
+      .then(function (s) {
+        var name = String(s.val() || 'Player');
+        name = name.slice(0, 30);
+        var list = [
+          ['day', k.day],
+          ['week', k.week],
+          ['month', k.month]
+        ];
+        list.forEach(function (x) {
+          var path = 'board/' + x[0];
+          path += '/' + x[1] + '/' + uid;
+          db.ref(path).transaction(function (cur) {
+            var old = (cur && cur.p) || 0;
+            return { n: name, p: old + pts, t: TS };
+          });
+        });
+      })
+      .catch(function (e) {
+        console.error('board write fail', e);
+      });
+  }
+
   // game = game ka naam (jaise 'knife-hit'), pts = is baar ke point
   // Wapas milta hai: { total, day, week, month } ya save na ho paye to false
   function save(game, pts) {
@@ -131,6 +161,7 @@
             week: st.week ? st.week.points : 0,
             month: st.month ? st.month.points : 0
           };
+          writeBoard(user, k, pts);
           toast(true, '✅ ' + game + ': +' + pts + ' point save hue (aaj ' + out.day + ')');
           return out;
         });
