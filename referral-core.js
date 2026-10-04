@@ -22,6 +22,26 @@
 
   function TS() { return firebase.database.ServerValue.TIMESTAMP; }
 
+  // Leaderboard ke liye (score.js ke jaisa hi): din subah 8 baje se badalta hai
+  var IST = 5.5 * 3600 * 1000;
+  var CUT = 8 * 3600 * 1000;
+  var BOARD_CHUNK = 700;      // leaderboard rule mein ek baar mein max 700 point jud sakte hain (1000 = 700 + 300)
+
+  function pad2(n) { return n < 10 ? '0' + n : '' + n; }
+  function ymd(d) { return d.getUTCFullYear() + '-' + pad2(d.getUTCMonth() + 1) + '-' + pad2(d.getUTCDate()); }
+  function boardKeys(ms) {
+    var d = new Date(ms + IST - CUT);
+    var dow = (d.getUTCDay() + 6) % 7;
+    var mon = new Date(Date.UTC(d.getUTCFullYear(), d.getUTCMonth(), d.getUTCDate() - dow));
+    return { day: ymd(d), week: ymd(mon), month: d.getUTCFullYear() + '-' + pad2(d.getUTCMonth() + 1) };
+  }
+  function serverNow() {
+    return db.ref('.info/serverTimeOffset').once('value').then(function (s) {
+      return Date.now() + (s.val() || 0);
+    }, function () { return Date.now(); });
+  }
+  function wait(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+
   // ---------- chhota message ----------
   function toast(text, ok) {
     try {
@@ -223,6 +243,129 @@
   }
 
   // ---------- 4) Dost ke minute poore hue to referrer ko point do (ek dost ke liye ek hi baar) ----------
+  // Point 3 jagah jaate hain: kul points, aaj/hafta/mahina ke stats, aur LEADERBOARD (din/hafta/mahina ke hisaab se, wahi khatam)
+
+  // Din/hafta/mahina ke stats mein point jodo (score.js jaisa). k = point milne ke samay ki chaabiyan
+  function addStats(user, amt, k) {
+    return db.ref('users/' + user.uid + '/stats').transaction(function (s) {
+      s = s || {};
+      ['day', 'week', 'month'].forEach(function (p) {
+        var cur = s[p];
+        if (!cur || cur.key !== k[p]) cur = { key: k[p], points: 0 };
+        cur.points = (cur.points || 0) + amt;
+        s[p] = cur;
+      });
+      s.updated = TS();
+      return s;
+    });
+  }
+
+  // Leaderboard mein jodne ke liye "baaki" mein likho.
+  // Point jis din/hafte/mahine mein mila, usi ki chaabi ke saath likhte hain:
+  //   refBoardPending/day/2026-10-04 = 1000   -> sirf 4 Oct ke daily board mein jayega
+  //   refBoardPending/week/2026-09-28 = 1000  -> sirf us hafte ke weekly board mein
+  //   refBoardPending/month/2026-10 = 1000    -> sirf October ke monthly board mein
+  // Isliye din/hafta/mahina badalte hi wo point apne aap leaderboard se hat jaate hain (live-board.js sirf aaj ki chaabi dikhata hai).
+  function queueBoard(user, amt, k) {
+    return db.ref('users/' + user.uid + '/refBoardPending').transaction(function (cur) {
+      cur = cur || {};
+      ['day', 'week', 'month'].forEach(function (kind) {
+        var v = cur[kind];
+        if (typeof v === 'number') {                       // purana tareeka: sirf ginti thi
+          var o = {};
+          if (v > 0) o[k[kind]] = v;
+          v = o;
+        }
+        v = v || {};
+        v[k[kind]] = (v[k[kind]] || 0) + amt;
+        cur[kind] = v;
+      });
+      return cur;
+    });
+  }
+
+  function creditPoints(user, amt) {
+    var base = 'users/' + user.uid;
+    return serverNow().then(function (now) {
+      var k = boardKeys(now);
+      return Promise.all([
+        db.ref(base + '/points').transaction(function (c) { return (c || 0) + amt; }),
+        db.ref(base + '/refPoints').transaction(function (c) { return (c || 0) + amt; }),
+        addStats(user, amt, k),
+        queueBoard(user, amt, k)
+      ]);
+    });
+  }
+
+  // Ek board (kind + key) mein baaki point likho; 700 se zyada ho to 13 second ruk ruk kar
+  function drainKind(user, kind, key, name, pending, tries) {
+    if (pending <= 0) return Promise.resolve();
+    var chunk = Math.min(pending, BOARD_CHUNK);
+
+    return db.ref('board/' + kind + '/' + key + '/' + user.uid).transaction(function (cur) {
+      var old = (cur && cur.p) || 0;
+      return { n: name, p: old + chunk, t: TS() };
+    }).then(function (r) {
+      if (!r.committed) return pending;
+      return db.ref('users/' + user.uid + '/refBoardPending/' + kind + '/' + key).transaction(function (c) {
+        var left = (c || 0) - chunk;
+        return left > 0 ? left : null;                    // 0 ho gaya to line hi hata do
+      }).then(function () { return pending - chunk; });
+    }).then(function (left) {
+      if (left > 0) return wait(13000).then(function () { return drainKind(user, kind, key, name, left, 0); });
+    }, function (e) {
+      // Leaderboard rule: 2 write ke beech 12 second chahiye. Thoda ruk kar dobara koshish.
+      if ((tries || 0) < 2) return wait(13000).then(function () { return drainKind(user, kind, key, name, pending, (tries || 0) + 1); });
+      console.error('leaderboard mein point nahi gaye (agli baar phir koshish hogi)', kind, key, e);
+    });
+  }
+
+  var draining = false;
+  function drainBoard(user) {
+    if (draining) return Promise.resolve();
+    draining = true;
+    return db.ref('users/' + user.uid + '/refBoardPending').once('value').then(function (s) {
+      var p = s.val() || {};
+      var jobs = [];
+      ['day', 'week', 'month'].forEach(function (kind) {
+        var v = p[kind];
+        if (!v || typeof v !== 'object') return;           // purane tareeke ki ginti: claim/queue use sudhaar dega
+        Object.keys(v).forEach(function (key) {
+          if (v[key] > 0) jobs.push({ kind: kind, key: key, amt: v[key] });
+        });
+      });
+      if (!jobs.length) return;
+      return db.ref('users/' + user.uid + '/name').once('value').then(function (nm) {
+        var name = String(nm.val() || 'Player').slice(0, 30);
+        return Promise.all(jobs.map(function (j) {
+          return drainKind(user, j.kind, j.key, name, j.amt, 0);
+        }));
+      });
+    }).catch(function (e) { console.error('drainBoard', e); })
+      .then(function () { draining = false; });
+  }
+
+  // Ek baar (sirf pehli baar): jo referral point leaderboard system se pehle mil chuke the unhe "aaj" mein jod do.
+  // Flag (refBoardInit) pehli baar hi lag jata hai, chahe purane point ho ya na ho,
+  // taaki baad mein naye system se mile point dobara na jud jaayein.
+  function migrateOld(user, entries) {
+    return db.ref('users/' + user.uid + '/refBoardInit').transaction(function (c) {
+      return c ? undefined : true;
+    }).then(function (r) {
+      if (!r.committed) return;                              // pehle ho chuka
+      var old = 0;
+      Object.keys(entries || {}).forEach(function (id) {
+        var e = entries[id];
+        if (e && e.paid) old += Number(e.paid) || 0;
+      });
+      if (old <= 0) return;
+      return serverNow().then(function (now) {
+        var k = boardKeys(now);
+        return Promise.all([addStats(user, old, k), queueBoard(user, old, k)]);
+      });
+    });
+  }
+
   function claim(user, entries) {
     var ids = Object.keys(entries || {}).filter(function (id) {
       var e = entries[id];
@@ -230,28 +373,28 @@
     });
 
     var total = 0;
-    return ids.reduce(function (chain, id) {
-      return chain.then(function () {
-        return db.ref('referrals/' + user.uid + '/' + id + '/paid').transaction(function (cur) {
-          return cur ? undefined : REWARD;                          // pehle se paid ho to dobara nahi
-        }).then(function (r) {
-          if (!r.committed) return;
-          return Promise.all([
-            db.ref('users/' + user.uid + '/points').transaction(function (c) { return (c || 0) + REWARD; }),
-            db.ref('users/' + user.uid + '/refPoints').transaction(function (c) { return (c || 0) + REWARD; })
-          ]).then(function () {
-            total += REWARD;
-            toast('🎉 Dost ne ' + minutesText() + ' khel liye! +' + REWARD + ' points mile.');
+    return migrateOld(user, entries).catch(function (e) { console.error('migrate', e); }).then(function () {
+      return ids.reduce(function (chain, id) {
+        return chain.then(function () {
+          return db.ref('referrals/' + user.uid + '/' + id + '/paid').transaction(function (cur) {
+            return cur ? undefined : REWARD;                        // pehle se paid ho to dobara nahi
+          }).then(function (r) {
+            if (!r.committed) return;
+            return creditPoints(user, REWARD).then(function () {
+              total += REWARD;
+              toast('🎉 Dost ne ' + minutesText() + ' khel liye! +' + REWARD + ' points mile.');
+            });
           });
         });
-      });
-    }, Promise.resolve()).then(function () { return total; })
-      .catch(function (e) { console.error('referral claim fail', e); return total; });
+      }, Promise.resolve());
+    }).catch(function (e) { console.error('referral claim fail', e); })
+      .then(function () { return drainBoard(user); })               // leaderboard mein bhi jodo
+      .then(function () { return total; });
   }
 
   window.PWRef = {
     config: { REWARD_POINTS: REWARD, PLAY_MINUTES: NEED_MIN, NEED_SEC: NEED_SEC, NEW_ACCOUNT_HOURS: NEW_HOURS },
-    whenReady: whenReady, waitForUser: waitForUser, ensureCode: ensureCode, link: link,
+    whenReady: whenReady, waitForUser: waitForUser, drainBoard: drainBoard, ensureCode: ensureCode, link: link,
     applyPending: applyPending, statusText: statusText, claim: claim,
     minutesText: minutesText, toast: toast
   };
