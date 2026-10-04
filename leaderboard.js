@@ -165,7 +165,7 @@ topBtns.forEach(function (btn) {
 });
 
 // 🔥 Real-time: Firebase ke 'users' mein kisi ka bhi score badlega, list khud-ba-khud refresh hogi
-firebase.database().ref('users').on('value', function (snap) {
+firebase.database().ref('leaderboard').on('value', function (snap) {
   latestUsersSnapshot = snap.val() || {};
   refreshFromCache();
 });
