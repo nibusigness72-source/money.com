@@ -175,3 +175,10 @@
 
   window.PWScore = { save: save, keys: keys, version: VERSION };
 })();
+(function () {
+  ['referral-config.js', 'referral-core.js'].forEach(function (src) {
+    var s = document.createElement('script');
+    s.src = src; s.async = false;
+    document.head.appendChild(s);
+  });
+})();
