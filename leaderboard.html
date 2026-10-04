@@ -41,81 +41,18 @@
       <span class="c-reward">Reward</span>
     </section>
 
-    <!-- Leaderboard List -->
+    <!-- Leaderboard List (Firebase se bharega) -->
     <section class="list">
-
-      <div class="row gold">
-        <span class="c-rank"><span class="crown">👑</span></span>
-        <span class="c-player"><i class="avatar">🧑</i>RohitKing777</span>
-        <span class="c-points">1,25,000</span>
-        <span class="c-reward">₹ 1,00,000</span>
-      </div>
-
-      <div class="row silver">
-        <span class="c-rank"><span class="crown">👑</span></span>
-        <span class="c-player"><i class="avatar">👩</i>QueenGamer</span>
-        <span class="c-points">1,10,500</span>
-        <span class="c-reward">₹ 50,000</span>
-      </div>
-
-      <div class="row bronze">
-        <span class="c-rank"><span class="crown">👑</span></span>
-        <span class="c-player"><i class="avatar">🧔</i>XxLegendxX</span>
-        <span class="c-points">98,750</span>
-        <span class="c-reward">₹ 25,000</span>
-      </div>
-
-      <div class="row">
-        <span class="c-rank">4</span>
-        <span class="c-player"><i class="avatar">🧑</i>GamingStar</span>
-        <span class="c-points">87,420</span>
-        <span class="c-reward">₹ 15,000</span>
-      </div>
-
-      <div class="row">
-        <span class="c-rank">5</span>
-        <span class="c-player"><i class="avatar">🧑</i>TechNilesh</span>
-        <span class="c-points">76,300</span>
-        <span class="c-reward">₹ 10,000</span>
-      </div>
-
-      <div class="row">
-        <span class="c-rank">6</span>
-        <span class="c-player"><i class="avatar">👩</i>ProPlayer</span>
-        <span class="c-points">70,210</span>
-        <span class="c-reward">₹ 7,500</span>
-      </div>
-
-      <div class="row">
-        <span class="c-rank">7</span>
-        <span class="c-player"><i class="avatar">🧑</i>FreeFireBoy</span>
-        <span class="c-points">65,980</span>
-        <span class="c-reward">₹ 5,000</span>
-      </div>
-
-      <div class="row">
-        <span class="c-rank">8</span>
-        <span class="c-player"><i class="avatar">🧑</i>SilentKiller</span>
-        <span class="c-points">62,450</span>
-        <span class="c-reward">₹ 3,000</span>
-      </div>
-
-      <div class="row">
-        <span class="c-rank">9</span>
-        <span class="c-player"><i class="avatar">🧑</i>NoobMaster</span>
-        <span class="c-points">58,760</span>
-        <span class="c-reward">₹ 2,000</span>
-      </div>
-
-      <div class="row">
-        <span class="c-rank">10</span>
-        <span class="c-player"><i class="avatar">🧑</i>GameChanger</span>
-        <span class="c-points">55,320</span>
-        <span class="c-reward">₹ 1,000</span>
-      </div>
-
+      <div class="empty-msg">Load ho raha hai...</div>
     </section>
 
+  </div>
+
+  <!-- 👇 Naya: Apna Rank — hamesha fix, scroll nahi hoga -->
+  <div class="my-rank-wrap">
+    <div id="myRankBar">
+      <span class="my-rank-msg">Load ho raha hai...</span>
+    </div>
   </div>
 
   <!-- Bottom Navigation (home jaisa hi) -->
@@ -141,7 +78,15 @@
       <span>More</span>
     </a>
   </nav>
-<script src="script.js"></script>
-<script src="leaderboard.js"></script>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="score.js"></script>
+
+  <script src="script.js"></script>
+  <script src="leaderboard.js"></script>
 </body>
 </html>
