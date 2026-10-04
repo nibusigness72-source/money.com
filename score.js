@@ -123,7 +123,7 @@
         return Promise.all([
           base.child('stats').transaction(function (s) { return addToStats(s, game, pts, k); }),
           base.child('points').transaction(function (c) { return (c || 0) + pts; })
-}).then(function (res) {
+        ]).then(function (res) {
           var st = res[0].snapshot.val() || {};
           var out = {
             total: res[1].snapshot.val() || 0,
