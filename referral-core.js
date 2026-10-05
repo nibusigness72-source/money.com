@@ -25,7 +25,7 @@
   // Leaderboard ke liye (score.js ke jaisa hi): din subah 8 baje se badalta hai
   var IST = 5.5 * 3600 * 1000;
   var CUT = 8 * 3600 * 1000;
-  var BOARD_CHUNK = 700;      // leaderboard rule mein ek baar mein max 700 point jud sakte hain (1000 = 700 + 300)
+  var BOARD_CHUNK = 1000;      // leaderboard rule mein ek baar mein max 700 point jud sakte hain (1000 = 700 + 300)
 
   function pad2(n) { return n < 10 ? '0' + n : '' + n; }
   function ymd(d) { return d.getUTCFullYear() + '-' + pad2(d.getUTCMonth() + 1) + '-' + pad2(d.getUTCDate()); }
