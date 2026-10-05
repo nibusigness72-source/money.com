@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Rules</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+:root{--card:#0f1b47;--bd:#1f3a8a;--cy:#22d3ee;--ye:#facc15;--gr:#22c55e;--rd:#ef4444;--tx:#fff;--mu:#9fb0d9}
+body{background:linear-gradient(180deg,#060c24,#0a1233);color:var(--tx);min-height:100vh;padding:14px;line-height:1.65}
+.app{max-width:520px;margin:0 auto;padding-bottom:30px}
+.top{display:flex;align-items:center;gap:14px;margin-bottom:12px}
+.back{color:var(--tx);text-decoration:none;font-size:26px}
+.top h1{font-size:20px}
+.hero{display:flex;align-items:center;gap:14px;background:linear-gradient(135deg,#12307a,#0f1b47);border:1px solid var(--cy);border-radius:20px;padding:16px;margin-bottom:16px}
+.hic{width:54px;height:54px;border-radius:50%;border:2px solid var(--ye);display:flex;align-items:center;justify-content:center;font-size:28px;flex:none}
+.hero h2{font-size:18px;color:var(--ye)}
+.hero p{font-size:12px;color:var(--mu);margin-top:3px}
+.sec{background:var(--card);border:1px solid var(--bd);border-radius:18px;padding:16px;margin-bottom:14px}
+.sec h3{display:flex;align-items:center;gap:10px;font-size:16px;color:var(--ye);margin-bottom:10px}
+.n{width:26px;height:26px;border-radius:50%;background:var(--cy);color:#001;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex:none}
+.sec p{color:#dbe5ff;font-size:14px;margin-bottom:8px}
+.sec ul{list-style:none}
+.sec li{position:relative;padding-left:22px;color:#dbe5ff;font-size:14px;margin-bottom:7px}
+.sec li:before{content:"✓";position:absolute;left:0;color:var(--gr);font-weight:800}
+.sec ol{padding-left:20px} .sec ol li{padding-left:4px} .sec ol li:before{content:none}
+.warn{background:rgba(239,68,68,.12);border:1px solid var(--rd);border-radius:14px;padding:12px;margin-top:6px}
+.warn b{color:#fca5a5}
+.warn li:before{content:"✕";color:var(--rd)}
+.note{background:rgba(250,204,21,.1);border:1px solid var(--ye);border-radius:14px;padding:12px;font-size:13px;color:#fde68a;margin-top:6px}
+.tbl{width:100%;border-collapse:collapse;margin:6px 0;font-size:13px}
+.tbl th,.tbl td{border:1px solid var(--bd);padding:8px;text-align:left}
+.tbl th{background:#12307a;color:var(--ye)}
+.flow{display:flex;flex-direction:column;gap:8px;margin:8px 0}
+.step{display:flex;gap:10px;align-items:flex-start;background:#0a1233;border:1px solid var(--bd);border-radius:14px;padding:10px;font-size:13px;color:#dbe5ff}
+.step i{font-style:normal;font-size:20px;flex:none}
+.mail{display:block;text-align:center;text-decoration:none;background:#1d4ed8;color:#fff;font-weight:800;border-radius:14px;padding:13px;margin:10px 0 6px;word-break:break-all}
+.copy{width:100%;background:transparent;border:1px solid var(--cy);color:var(--cy);border-radius:14px;padding:11px;font-weight:700;font-size:14px}
+details{background:#0a1233;border:1px solid var(--bd);border-radius:14px;padding:12px;margin-bottom:8px}
+summary{font-weight:700;font-size:14px;cursor:pointer;color:var(--tx)}
+details p{margin-top:8px;font-size:13px}
+.more{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px}
+.more a{color:var(--cy);border:1px solid var(--bd);border-radius:20px;padding:7px 12px;font-size:12px;text-decoration:none}
+.foot{text-align:center;color:var(--mu);font-size:12px;margin-top:14px}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="top"><a class="back" href="settings.html">←</a><h1>Game Rules</h1></header>
+<section class="hero"><div class="hic">🎮</div><div><h2>Game Rules</h2><p>अंतिम बदलाव: 5 अक्टूबर 2026 &nbsp;•&nbsp; PLAY&amp;WIN</p></div></section>
+<section class="sec"><h3><span class="n">1</span>खेल क्या है</h3><p>PLAY&amp;WIN एक <b>मुफ़्त</b> game app है। खेलने के लिए <b>₹0</b> लगता है — कोई recharge, deposit या entry fee नहीं। आप games खेलकर score बनाते हैं, score से leaderboard बनता है और ऊपर आने वालों को कंपनी की घोषित की हुई इनाम राशि मिलती है।</p></section>
+<section class="sec"><h3><span class="n">2</span>कैसे खेलें</h3><ol><li>Login करके <b>Play</b> पेज खोलें और कोई game चुनें।</li><li>Game पूरा खेलें। आपका score अपने आप save हो जाता है और points बनते हैं।</li><li>आपके points <b>Daily, Weekly और Monthly</b> तीनों leaderboard में जुड़ते हैं।</li></ol></section>
+<section class="sec"><h3><span class="n">3</span>Leaderboard का समय</h3><table class='tbl'><tr><th>Leaderboard</th><th>कब शुरू – कब ख़त्म</th></tr><tr><td>Daily</td><td>रोज़ सुबह 8:00 बजे से अगले दिन सुबह 8:00 बजे तक</td></tr><tr><td>Weekly</td><td>सोमवार सुबह 8:00 बजे से अगले सोमवार सुबह 8:00 बजे तक</td></tr><tr><td>Monthly</td><td>महीने की 1 तारीख़ सुबह 8:00 बजे से अगले महीने की 1 तारीख़ सुबह 8:00 बजे तक</td></tr></table><p>समय ख़त्म होते ही नई गिनती शुरू हो जाती है और पुरानी का नतीजा तय हो जाता है।</p></section>
+<section class="sec"><h3><span class="n">4</span>सबको पैसे कैसे मिलेंगे</h3><div class='flow'><div class='step'><i>🏆</i><div><b>1. Rank तय:</b> समय ख़त्म होने पर सबसे ज़्यादा points वाले को Rank 1, फिर Rank 2, Rank 3… मिलता है।</div></div><div class='step'><i>📢</i><div><b>2. इनाम घोषित:</b> कंपनी हर Rank का इनाम पहले से Leaderboard के <b>Reward</b> में दिखाती है। <b>Pending</b> का मतलब इनाम अभी घोषित नहीं हुआ; <b>-</b> का मतलब उस Rank पर इनाम नहीं है।</div></div><div class='step'><i>💰</i><div><b>3. Wallet में जमा:</b> इनाम वाले Rank के खिलाड़ी के Wallet में रकम <b>अपने आप</b> जुड़ जाती है (app खोलने पर)। यह <b>Wallet History</b> में समय के साथ दिखती है।</div></div><div class='step'><i>💸</i><div><b>4. Withdraw:</b> Wallet से कम से कम <b>₹10</b> निकालने की request डालें। Status <b>Pending</b> दिखेगा।</div></div><div class='step'><i>✅</i><div><b>5. Payment:</b> कंपनी आपकी details जाँचकर <b>24 से 48 घंटे</b> में आपके UPI / Bank में पैसा भेजती है, फिर status <b>Success</b> हो जाता है।</div></div></div><div class='note'>इनाम की राशि कंपनी तय करती है और हर दिन / हफ़्ते / महीने के लिए अलग हो सकती है। इनाम खिलाड़ी के deposit या entry fee से जुड़ा नहीं है — खेल पूरी तरह मुफ़्त है।</div></section>
+<section class="sec"><h3><span class="n">5</span>Withdraw के नियम</h3><ul><li>कम से कम ₹10 और Wallet में उपलब्ध रकम से ज़्यादा नहीं।</li><li>पहले <b>change details</b> में अपना सही नाम, mobile और Bank / UPI भरें।</li><li>गलत details से पैसा गलत जगह जाए तो ज़िम्मेदारी खिलाड़ी की होगी।</li><li>Pending request के पैसे Wallet से तुरंत घट जाते हैं।</li></ul></section>
+<section class="sec"><h3><span class="n">6</span>Referral के नियम</h3><ul><li>हर खिलाड़ी का अपना referral code / link होता है।</li><li>नया खिलाड़ी आपके code से जुड़े और <b>सच में खेले</b> (कम से कम 5 मिनट) तभी referral का फ़ायदा मिलेगा।</li><li>सिर्फ़ install या register करने पर कोई reward नहीं।</li><li>नकली या अपने ही दूसरे accounts से referral पर reward रद्द होगा।</li></ul></section>
+<section class="sec"><h3><span class="n">7</span>Fair Play — ये मना है</h3><ul><li>एक व्यक्ति के एक से ज़्यादा accounts।</li><li>नकली score, hack, bot, tool या app / code में छेड़छाड़।</li><li>नकली referral या दूसरे के नाम / number का इस्तेमाल।</li><li>गलत या दूसरे की payment details देना।</li></ul><div class="warn"><b>नियम तोड़ने पर कार्रवाई:</b><ul>
+<li>आपका account हमेशा के लिए <b>delete</b> कर दिया जाएगा।</li>
+<li>आपकी जीती हुई रकम का <b>payment रोक लिया जाएगा</b> और नहीं दिया जाएगा।</li>
+<li>भविष्य में आप कभी <b>नई ID नहीं बना पाएँगे</b>।</li>
+<li>आपका <b>mobile number block</b> कर दिया जाएगा।</li></ul></div></section>
+<section class="sec"><h3><span class="n">8</span>शिकायत / Report कैसे करें</h3><p>अगर आपको कोई cheating, नकली खिलाड़ी या कोई भी समस्या दिखे, तो report करें:</p><ul><li>Email: <b>nileshraj9570@gmail.com</b></li><li>अपनी <b>Player ID</b> और screenshot ज़रूर भेजें।</li><li>हम <b>24 घंटे के अंदर</b> समाधान करेंगे और जाँच के बाद ज़रूरी कार्रवाई करेंगे।</li></ul><p>कंपनी का फ़ैसला अंतिम होगा।</p></section>
+<nav class="more"><a href="terms.html">Terms &amp; Conditions</a><a href="privacy.html">Privacy Policy</a><a href="help.html">Help &amp; Support</a></nav>
+<p class="foot">सवाल या शिकायत: nileshraj9570@gmail.com</p>
+</div>
+
+</body>
+</html>
