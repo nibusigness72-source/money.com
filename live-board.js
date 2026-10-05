@@ -61,6 +61,7 @@ function render(rows) {
       '<span class="c-points">' + fmt(p.points) + '</span>' +
       '<span class="c-reward">' + rewardFor(state.period, rank) + '</span>';
     row.querySelector('.nm').textContent = (p.name || 'Player') + (p.me ? ' (Aap)' : '');
+    row.dataset.uid = p.uid || '';
     list.appendChild(row);
   });
 }
@@ -85,7 +86,7 @@ function load(quiet) {
       var rows = [];
       snap.forEach(function (c) {
         var v = c.val() || {};
-        rows.push({ name: v.n, points: v.p, me: c.key === user.uid });
+        rows.push({ name: v.n, points: v.p, uid: c.key, me: c.key === user.uid });
       });
       rows.reverse();
       render(rows);

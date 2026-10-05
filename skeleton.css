@@ -1,0 +1,20 @@
+/* skeleton.css - data aane tak chamakte khaali dibbe (rem mein, har phone par ek jaise) */
+@keyframes pwsk { 0% { background-position: -20rem 0; } 100% { background-position: 20rem 0; } }
+.skeleton {
+  color: transparent !important;
+  border-radius: .5rem;
+  background: linear-gradient(90deg, rgba(255,255,255,.07) 25%, rgba(255,255,255,.2) 50%, rgba(255,255,255,.07) 75%);
+  background-size: 40rem 100%;
+  animation: pwsk 1.3s linear infinite;
+  pointer-events: none;
+}
+.skeleton * { visibility: hidden; }
+span.skeleton, b.skeleton { display: inline-block; min-width: 6rem; }
+img.skeleton { object-fit: none; object-position: -9999px 0; }
+
+/* list ki khaali row (leaderboard, history jaisi) */
+.sk-row { display: flex; align-items: center; gap: .9rem; height: 4.4rem; margin-bottom: .8rem; padding: .7rem 1rem; border: 1px solid rgba(255,255,255,.08); border-radius: 1.1rem; background: rgba(15,27,71,.6); }
+.sk-row .sk-c { width: 2.8rem; height: 2.8rem; border-radius: 50%; flex: none; }
+.sk-row .sk-m { flex: 1; display: flex; flex-direction: column; gap: .5rem; }
+.sk-row .sk-l { height: .8rem; width: 70%; } .sk-row .sk-s { height: .6rem; width: 45%; }
+.sk-row .sk-a { width: 4rem; height: 1.1rem; flex: none; }

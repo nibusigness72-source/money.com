@@ -108,6 +108,12 @@
         box.appendChild(field('Bank Name', d.bank)); box.appendChild(field('Account No', d.account));
         box.appendChild(field('IFSC', d.ifsc)); box.appendChild(field('UPI ID', d.upi));
         var chk = el('div', 'chk', 'Jaanch raha hai...'); box.appendChild(chk);
+        if (window.PWReport) {   // Player Report button
+          var rb = el('button', '', '📊 Player Report dekho');
+          rb.style.cssText = 'width:100%;margin:6px 0 10px;padding:11px;border-radius:12px;border:1px solid #22d3ee;background:transparent;color:#22d3ee;font-weight:700;font-size:14px';
+          rb.onclick = function () { PWReport.show(r._u, r.n); };
+          box.appendChild(rb);
+        }
         // Admin ke liye asli jaanch: is player ne database ke hisaab se kitna jeeta aur kitna pehle liya
         Promise.all([db.ref('winnings/' + r._u).once('value'), db.ref('withdrawals/' + r._u).once('value')]).then(function (x) {
           var won = 0, taken = 0, w = x[0].val() || {}, t = x[1].val() || {};
