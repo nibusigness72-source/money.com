@@ -132,15 +132,7 @@ body {
 .wallet-label { font-size: 12px; color: var(--muted); }
 .wallet-amount { font-size: 22px; font-weight: 800; }
 
-.recharge-btn {
-  background: transparent;
-  color: var(--text);
-  border: 1px solid var(--cyan);
-  border-radius: 8px;
-  padding: 8px 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
+
 
 .wallet-bottom {
   display: flex;
