@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wallet History</title>
+  <link rel="stylesheet" href="wallet-history.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <a href="settings.html" class="back-btn">←</a>
+      <h1>Wallet History</h1>
+    </header>
+
+    <section class="sum">
+      <div class="box"><span>Ab tak jeeta</span><b id="sWon">₹ 0</b></div>
+      <div class="box"><span>Withdraw kiya</span><b id="sTaken">₹ 0</b></div>
+      <div class="box"><span>Wallet mein</span><b id="sBal" class="green">₹ 0</b></div>
+    </section>
+
+    <div class="tabs">
+      <button class="tab active" data-f="all">Sab</button>
+      <button class="tab" data-f="win">Jeeta hua</button>
+      <button class="tab" data-f="wd">Withdraw</button>
+    </div>
+
+    <div id="list"><div class="empty">Load ho raha hai...</div></div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="wallet-history.js"></script>
+</body>
+</html>

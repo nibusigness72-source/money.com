@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Withdraw</title>
+  <link rel="stylesheet" href="payouts.css">
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <a href="settings.html" class="back-btn">←</a>
+      <h1>Withdraw</h1>
+    </header>
+
+    <!-- Withdraw karne wala hissa (sabke liye) -->
+    <section class="card" id="userBox">
+      <div class="bal">Aapke wallet mein: <b id="bal">₹ 0.00</b></div>
+      <label class="field"><b>Amount:</b>
+        <input id="amt" type="tel" inputmode="numeric" maxlength="6" placeholder="Enter withdrawal amount (min ₹10)">
+      </label>
+      <p class="msg" id="msg"></p>
+      <button class="main-btn" id="okBtn">OK</button>
+      <p class="hint">Request ke baad status <b>Pending</b> dikhega. Paisa <b>24 se 48 ghante</b> mein mil jayega.</p>
+      <p class="hint"><a href="withdraw.html">Payment details badlo</a></p>
+
+      <h3>Meri withdraw list</h3>
+      <div id="mine"></div>
+    </section>
+
+    <!-- Sirf admin (72588 45353) ko dikhta hai -->
+    <section class="card" id="adminBox" style="display:none">
+      <div class="tabs">
+        <button class="tab active" id="tabPending">Pending</button>
+        <button class="tab" id="tabSuccess">Success</button>
+      </div>
+      <div class="total" id="total"></div>
+      <div id="list"></div>
+    </section>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="payouts.js"></script>
+</body>
+</html>

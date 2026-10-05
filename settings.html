@@ -14,6 +14,7 @@
     <header class="header">
       <a href="home.html" class="back-btn">←</a>
       <h1>Settings &amp; Rules</h1>
+      <a href="payouts.html?tab=pending" id="pendingLink" style="display:none;margin-left:auto;align-items:center;gap:6px;color:#facc15;text-decoration:none;font-weight:700;font-size:13px;border:1px solid #facc15;border-radius:20px;padding:6px 12px;">✎ Pending<span id="pendingCount"></span></a>
     </header>
 
     <!-- Profile -->
@@ -40,7 +41,10 @@
           <span class="wallet-label">Your Wallet</span>
           <span class="wallet-amount">₹ 0.00</span>
         </div>
-        <button class="withdraw-btn" id="withdrawBtn" onclick="location.href='withdraw.html'">change details</button>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <button class="withdraw-btn" id="withdrawBtn" onclick="location.href='payouts.html'" style="background:#facc15;color:#000;border-color:#facc15;">Withdraw</button>
+          <button class="withdraw-btn" onclick="location.href='withdraw.html'">change details</button>
+        </div>
       </div>
       <div class="wallet-bottom">
         <span>Winnings : <b class="green">₹ 0.00</b></span>
@@ -55,7 +59,7 @@
         <span class="m-icon">🔔</span>
         <span class="m-text">Game Rules</span>
         <span class="arrow">›</span>
-      </>
+      </a>
       <a href="#" class="menu-item">
         <span class="m-icon">📄</span>
         <span class="m-text">Terms &amp; Conditions</span>
@@ -76,6 +80,11 @@
         <span class="m-text">Game History</span>
         <span class="arrow">›</span>
       </a>
+        <a href="wallet-history.html" class="menu-item">
+        <span class="m-icon">💰</span>
+        <span class="m-text">Wallet History</span>
+        <span class="arrow">›</span>
+        </a>
     <a href="#" class="menu-item logout" id="logoutBtn">
         <span class="m-icon">⏻</span>
         <span class="m-text">Log Out</span>

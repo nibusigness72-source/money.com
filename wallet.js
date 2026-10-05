@@ -43,10 +43,10 @@
     el.textContent = text; document.body.appendChild(el);
     setTimeout(function () { el.remove(); }, 6000);
   }
-  function showWallet(total) {             // Home + Settings dono mein wallet badlo
-    document.querySelectorAll('.wallet-amount').forEach(function (e) { e.textContent = money(total); });
-    var w = document.querySelector('.wallet-bottom b.green');   // "Winnings"
-    if (w) w.textContent = money(total);
+  function showWallet(balance, won) {     // Home + Settings dono mein wallet badlo
+    document.querySelectorAll('.wallet-amount').forEach(function (e) { e.textContent = money(balance); });
+    var w = document.querySelector('.wallet-bottom b.green');   // "Winnings" = ab tak kul jeeta
+    if (w) w.textContent = money(won);
   }
   function amountOf(s) {                   // "1,30,000" ya "₹ 5000" -> number, text ho to 0
     var t = String(s).replace(/[₹,\s]/g, '');
@@ -94,17 +94,41 @@
     }).catch(function (e) { console.error('Wallet claim error', e); }).then(function () { running = false; });
   }
 
+  var ADMIN = '+917258845353';
+  var won = 0, taken = 0;
+  function paint() { showWallet(Math.max(0, won - taken), won); }
+
   firebase.auth().onAuthStateChanged(function (u) {
     if (!u) return;
     uid = u.uid;
-    // wallet live dikhao (jaise hi inaam judta hai, turant badal jata hai)
+    // Wallet live: jeeta hua paisa - withdraw ki hui (pending + success) rakam
     db.ref('winnings/' + uid).on('value', function (s) {
       var total = 0, all = s.val() || {};
       Object.keys(all).forEach(function (kind) {
         Object.keys(all[kind] || {}).forEach(function (key) { total += amountOf((all[kind][key] || {}).a); });
       });
-      showWallet(total);
+      won = total; paint();
     }, function (e) { console.error('Wallet nahi padha', e); });
+    db.ref('withdrawals/' + uid).on('value', function (s) {
+      var all = s.val() || {}; taken = 0;
+      Object.keys(all).forEach(function (id) { taken += Number(all[id].a) || 0; });
+      paint();
+    }, function (e) { console.error('Withdraw list nahi padhi', e); });
+
+    // Sirf admin ko Settings ke upar "Pending" dikhao (kitne withdraw baaki hain)
+    var pl = document.getElementById('pendingLink');
+    if (pl && u.phoneNumber === ADMIN) {
+      pl.style.display = 'flex';
+      var count = function () {
+        db.ref('withdrawals').once('value').then(function (s) {
+          var n = 0, all = s.val() || {};
+          Object.keys(all).forEach(function (x) { Object.keys(all[x]).forEach(function (id) { if (all[x][id].s === 'pending') n++; }); });
+          document.getElementById('pendingCount').textContent = n ? ' (' + n + ')' : '';
+        }).catch(function () {});
+      };
+      count(); setInterval(count, 60000);
+    }
+
     claimAll();
     setInterval(claimAll, 5 * 60 * 1000);   // app khula rahe to har 5 minute mein dobara dekho
   });
