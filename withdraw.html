@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Withdraw Details</title>
+  <link rel="stylesheet" href="withdraw.css">
+</head>
+<body>
+  <div class="app">
+
+    <header class="header">
+      <a href="settings.html" class="back-btn">←</a>
+      <h1>Payment Details</h1>
+    </header>
+
+    <p class="note">Inaam ka paisa bhejne ke liye apni details bharo. </p>
+
+    <section class="form">
+      <label class="field"><span class="ico">👤</span><b>Name:</b>
+        <input id="name" type="text" maxlength="40" placeholder="Enter Name" autocomplete="name">
+      </label>
+
+      <label class="field"><span class="ico">📱</span><b>Mobile No:</b>
+        <input id="mobile" type="tel" inputmode="numeric" maxlength="10" placeholder="Enter 10-digit number">
+      </label>
+
+      <label class="field"><span class="ico">🏦</span><b>Bank Name:</b>
+        <input id="bank" type="text" maxlength="40" placeholder="e.g., State Bank of India">
+      </label>
+
+      <label class="field"><span class="ico">🔢</span><b>Account No:</b>
+        <input id="account" type="tel" inputmode="numeric" maxlength="18" placeholder="Bank account number">
+      </label>
+
+      <label class="field"><span class="ico">🏷️</span><b>IFSC:</b>
+        <input id="ifsc" type="text" maxlength="11" placeholder="e.g., SBIN0001234" autocapitalize="characters">
+      </label>
+
+      <div class="or"><span>OR</span></div>
+
+      <label class="field"><span class="ico">💳</span><b>UPI ID:</b>
+        <input id="upi" type="text" maxlength="50" placeholder="Enter UPI ID, e.g., example@upi" autocapitalize="none">
+      </label>
+
+      <div class="apps">
+        <span class="gpay">GPay</span> | <span class="phonepe">PhonePe</span> | <span class="paytm">Paytm</span>
+      </div>
+      <p class="hint">या (GPay / PhonePe / Paytm / BHIM) </p>
+
+      <p class="msg" id="msg"></p>
+      <button class="save-btn" id="saveBtn">SAVE</button>
+    </section>
+
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="withdraw.js"></script>
+</body>
+</html>
