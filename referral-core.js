@@ -96,20 +96,21 @@
   }
 
   // Phone number seedha nahi, uska hash rakhte hain (privacy)
-  function phoneKey(user) {
+function phoneKey(user) {
     var digits = String(user.phoneNumber || '').replace(/\D/g, '');
-    if (!digits) return Promise.resolve('');
+    var ident = digits || (user.email ? 'g' + String(user.email).toLowerCase() : '');
+    if (!ident) return Promise.resolve('');
     try {
       if (window.crypto && crypto.subtle && window.TextEncoder) {
-        return crypto.subtle.digest('SHA-256', new TextEncoder().encode('pw|' + digits)).then(function (buf) {
+        return crypto.subtle.digest('SHA-256', new TextEncoder().encode('pw|' + ident)).then(function (buf) {
           return Array.prototype.map.call(new Uint8Array(buf), function (b) {
             return ('0' + b.toString(16)).slice(-2);
           }).join('').slice(0, 40);
         });
       }
     } catch (e) {}
-    return Promise.resolve('p' + digits);
-  }
+    return Promise.resolve('p' + ident.replace(/[^a-z0-9]/gi, ''));
+}
 
   function minutesText(m) {
     m = m || NEED_MIN;
