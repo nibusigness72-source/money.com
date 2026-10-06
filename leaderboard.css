@@ -228,3 +228,41 @@ body {
   color: var(--yellow);
   border: 1px solid var(--yellow);
 }
+/* ==========================================
+   Loading Skeleton (data aane tak chamakdar khali dabbe)
+   Asli list aate hi ye apne aap hat jate hain
+   ========================================== */
+
+.sk-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 10px;
+}
+
+.sk {
+  display: block;
+  background: linear-gradient(90deg, #1a2a66 25%, #2e44a0 50%, #1a2a66 75%);
+  background-size: 200% 100%;
+  animation: pwShimmer 1.5s infinite linear, pwGone 0.3s 15s forwards;
+  border-radius: 6px;
+}
+
+.sk-rank { width: 24px; height: 18px; }
+.sk-av   { width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0; }
+.sk-name { flex: 1; height: 14px; }
+.sk-pts  { width: 50px; height: 16px; }
+.sk-rew  { width: 66px; height: 16px; }
+
+@keyframes pwShimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* 15 second tak data na aaye to chamakna band */
+@keyframes pwGone {
+  to { opacity: 0; }
+}
