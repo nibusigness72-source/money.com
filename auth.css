@@ -300,3 +300,41 @@ body {
   box-shadow: none;
   cursor: not-allowed;
 }
+.or-line {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 14px 0;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.or-line::before, .or-line::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: #1a2f6b;
+}
+
+.btn-google {
+  width: 100%;
+  height: 54px;
+  border: none;
+  border-radius: 14px;
+  background: #ffffff;
+  color: #1b1b1b;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.btn-google i { color: #ea4335; font-size: 20px; }
+.btn-google:active { transform: scale(0.98); }
+.btn-google:disabled { opacity: 0.6; cursor: not-allowed; }
+@media (max-height: 720px) {
+  .btn-google { height: 46px; font-size: 16px; }
+  .or-line { margin: 8px 0; }
+}

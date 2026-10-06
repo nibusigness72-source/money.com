@@ -178,4 +178,40 @@ otpBoxes.forEach(function (box, i) {
   });
 });
 
+// ---------- Google se login ----------
+var googleBtn = document.getElementById('googleBtn');
+
+function googleDone(user) {
+  try {
+    localStorage.setItem('loggedIn', '1');
+    localStorage.setItem('phone', user.email || '');
+  } catch (e) {}
+  window.location.href = 'index.html';
+}
+
+googleBtn.addEventListener('click', function () {
+  googleBtn.disabled = true;
+  var provider = new firebase.auth.GoogleAuthProvider();
+  provider.setCustomParameters({ prompt: 'select_account' });
+
+  firebase.auth().signInWithPopup(provider)
+    .then(function (res) { googleDone(res.user); })
+    .catch(function (err) {
+      // Popup block ho to redirect se try karo
+      if (err.code === 'auth/popup-blocked' ||
+          err.code === 'auth/operation-not-supported-in-this-environment') {
+        firebase.auth().signInWithRedirect(provider);
+        return;
+      }
+      googleBtn.disabled = false;
+      if (err.code === 'auth/popup-closed-by-user' ||
+          err.code === 'auth/cancelled-popup-request') return;
+      alert(errorText(err));
+    });
+});
+
+// Redirect se wapas aane par
+firebase.auth().getRedirectResult().then(function (res) {
+  if (res && res.user) googleDone(res.user);
+}).catch(function (err) { alert(errorText(err)); });
 lockOtp();

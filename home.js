@@ -33,6 +33,8 @@ firebase.auth().onAuthStateChanged(function (user) {
   ref.once('value').then(function (snap) {
     var data = snap.val() || {};
 
+if (!data.name && user.displayName) { data.name = user.displayName.slice(0, 20); ref.child('name').set(data.name); }
+    if (!data.photo && user.photoURL) { data.photo = user.photoURL; ref.child('photo').set(data.photo); }
     nameEl.textContent = data.name || 'Player';
     if (data.photo) avatarEl.src = data.photo;
 
