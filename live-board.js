@@ -77,7 +77,7 @@ function load(quiet) {
   var kind = MAP[state.period];
   var key = PWScore.keys(Date.now())[kind];
   var my = ++reqId;
-  if (!quiet) message('Load ho raha hai...');
+  if (!quiet) message('');
 
   firebase.database().ref('board/' + kind + '/' + key)
     .orderByChild('p').limitToLast(state.count).once('value')
