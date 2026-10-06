@@ -37,7 +37,7 @@
       box.innerHTML = '';
       var x = el('button', 'x', '✕'); x.onclick = function () { bg.remove(); }; box.appendChild(x);
       box.appendChild(el('h3', '', name || u.name || 'Player'));
-      box.appendChild(el('small', '', 'ID: ' + (u.playerId || '-') + '  •  ' + (u.phone || '')));
+      box.appendChild(el('small', '', 'ID: ' + (u.playerId || '-') + '  •  ' + (u.phone || u.email || '')));
 
       var g = el('div', 'g');
       [['Kul points', u.points || 0], ['Aaj', (st.day || {}).points || 0], ['Hafta', (st.week || {}).points || 0], ['Mahina', (st.month || {}).points || 0]].forEach(function (a) {

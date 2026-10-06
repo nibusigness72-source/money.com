@@ -26,9 +26,11 @@ firebase.auth().onAuthStateChanged(function (user) {
     if (data.photo) showPhoto(data.photo);
     document.getElementById('profileId').textContent = data.playerId ? 'ID: ' + data.playerId : 'ID: ------';
 
-    // Phone number bhi save karo, taaki pata chale ye kiska account hai
+  // Phone ya email bhi save karo, taaki pata chale ye kiska account hai
     if (!data.phone && user.phoneNumber) {
       db.ref('users/' + user.uid + '/phone').set(user.phoneNumber);
+    } else if (!data.email && user.email) {
+      db.ref('users/' + user.uid + '/email').set(user.email);
     }
   }).catch(function () {
     alert('Data nahi aaya. Database Rules check karo.');

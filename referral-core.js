@@ -96,9 +96,10 @@
   }
 
   // Phone number seedha nahi, uska hash rakhte hain (privacy)
-function phoneKey(user) {
+// Phone number ya (Google login ho to) email seedha nahi, uska hash rakhte hain (privacy)
+  function phoneKey(user) {
     var digits = String(user.phoneNumber || '').replace(/\D/g, '');
-    var ident = digits || (user.email ? 'g' + String(user.email).toLowerCase() : '');
+    var ident = digits || (user.email ? 'g' + String(user.email).toLowerCase().trim() : '');
     if (!ident) return Promise.resolve('');
     try {
       if (window.crypto && crypto.subtle && window.TextEncoder) {
@@ -110,7 +111,7 @@ function phoneKey(user) {
       }
     } catch (e) {}
     return Promise.resolve('p' + ident.replace(/[^a-z0-9]/gi, ''));
-}
+  }
 
   function minutesText(m) {
     m = m || NEED_MIN;
@@ -193,6 +194,7 @@ function phoneKey(user) {
   function statusText(st) {
     if (st === 'applied') return '🎁 Referral lag gaya! ' + minutesText() + ' khelo, aapke dost ko ' + REWARD + ' points milenge.';
     if (st === 'phone-used') return 'Is number par referral pehle hi lag chuka hai, dobara nahi lagega.';
+    if (st === 'nophone') return 'Is account me phone ya email nahi mila, dobara login karo.';
     if (st === 'old-account') return 'Referral sirf naye account par lagta hai.';
     if (st === 'badcode') return 'Referral code galat hai.';
     return '';

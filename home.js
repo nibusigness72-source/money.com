@@ -48,9 +48,11 @@ if (!data.name && user.displayName) { data.name = user.displayName.slice(0, 20);
       });
     }
 
-    // Phone number save na ho to save kar do
+  // Phone ya email save na ho to save kar do
     if (!data.phone && user.phoneNumber) {
       ref.child('phone').set(user.phoneNumber);
+    } else if (!data.email && user.email) {
+      ref.child('email').set(user.email);
     }
   }).catch(function () {
     nameEl.textContent = 'Player';
