@@ -233,3 +233,76 @@ body {
   color: var(--yellow);
   border: 1px solid var(--yellow);
 }
+/* ==========================================
+   Loading Skeleton (data aane tak chamakdar khali dabbe)
+   JS jaise hi code / number likhta hai, ye apne aap hat jate hain
+   ========================================== */
+
+/* 1. Chamakne wali pattiyan */
+.skeleton-text {
+  background: linear-gradient(90deg, #1a2a66 25%, #2e44a0 50%, #1a2a66 75%);
+  background-size: 200% 100%;
+  animation: pwShimmer 1.5s infinite linear, pwGone 0.3s 15s forwards;
+  border-radius: 6px;
+}
+
+/* 2. Referral code ke dabbe ke andar */
+.skeleton-code {
+  width: 60%;
+  height: 20px;
+}
+
+/* 3. Stats ke number ki jagah */
+.skeleton-stat {
+  display: block;
+  width: 44px;
+  height: 28px;
+  margin: 0 auto;
+  border-radius: 8px;
+}
+
+/* 4. Link wali line (code ke neeche) - asli link aate hi hat jati hai */
+.skeleton-link-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.skeleton-link-row .skeleton-text:first-child {
+  flex: 1;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.skeleton-link-row .skeleton-text:last-child {
+  width: 92px;
+  height: 40px;
+  border-radius: 10px;
+}
+
+.card:has(#refLink) .skeleton-link-row { display: none; }
+
+/* 5. Your Friends ki list khali ho to 2 chamakti pattiyan */
+#friendsBox:empty::before,
+#friendsBox:empty::after {
+  content: '';
+  display: block;
+  height: 36px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, #1a2a66 25%, #2e44a0 50%, #1a2a66 75%);
+  background-size: 200% 100%;
+  animation: pwShimmer 1.5s infinite linear, pwGone 0.3s 15s forwards;
+}
+
+#friendsBox:empty::before { margin-bottom: 12px; }
+
+/* 6. Chamak ka animation */
+@keyframes pwShimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* 15 second tak data na aaye to chamakna band (hamesha na chamakta rahe) */
+@keyframes pwGone {
+  to { opacity: 0; }
+}
