@@ -8,16 +8,16 @@
     TIME: 60,            // game kitne second ka
     PASS_POINTS: 4,      // ek pipe paar karne par point
     OUT_PENALTY: 20,     // out hone par kitne point kategi
-    FREEZE: 2,           // out hone ke baad kitne second ruko (timer chalta rahta hai)
+    FREEZE: 1,           // out hone ke baad kitne second ruko (timer chalta rahta hai)
     GRAVITY: 1700,       // neeche girne ki taakat
     FLAP: -470,          // tap par upar jaane ki taakat
     MAX_FALL: 620,       // sabse tez girne ki speed
-    SPEED: 140,          // pipe kitni tez aate hain
-    GAP: 175,            // pipe ke beech ka khula hissa
-    PIPE_W: 62,          // pipe ki chaudai
-    SPACING: 210,        // do pipe ke beech doori
-    MAX_SHIFT: 150,      // agle pipe ka gap pichhle se zyada se zyada kitna upar-neeche
-    BIRD_SIZE: 46,       // photo ka size
+    SPEED: 270,          // pipe kitni tez aate hain
+    GAP: 180,            // pipe ke beech ka khula hissa
+    PIPE_W: 32,          // pipe ki chaudai
+    SPACING: 180,        // do pipe ke beech doori
+    MAX_SHIFT: 190,      // agle pipe ka gap pichhle se zyada se zyada kitna upar-neeche
+    BIRD_SIZE: 66,       // photo ka size
     HIT_R: 14,           // chhune ka gola (chhota = aasan)
     BIRD_X: 90,          // photo screen par kahan (left se)
     GROUND: 110          // neeche zameen ki oonchai
