@@ -49,7 +49,7 @@ document.querySelectorAll('.nav-item').forEach(function (item) {
 document.querySelectorAll('.play-btn').forEach(function (btn) {
   btn.addEventListener('click', function () {
     var game = btn.getAttribute('data-game');
-    var ready = ['flip-ball','fruit-cut' ,'stack-tower', 'knife-hit','gem-blast'];
+    var ready = ['fly-modi','flip-ball','fruit-cut' ,'stack-tower', 'knife-hit','gem-blast'];
     if (ready.indexOf(game) !== -1) {
       window.location.href = game + '.html';
     } else {

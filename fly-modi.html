@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Fly Modi - PLAY&amp;WIN</title>
+  <link rel="stylesheet" href="fly-modi.css">
+</head>
+<body>
+
+  <canvas id="game"></canvas>
+
+  <!-- Shuru wali screen -->
+  <div class="overlay" id="menu">
+    <div class="card">
+      <div class="title">FLY MODI</div>
+      <ul class="rules">
+        <li>⏱ Time: <b>1 minute</b></li>
+        <li>Screen par tap karo, udo aur pipe ke beech se niklo</li>
+        <li>Ek pipe paar = <b class="good">+4 points</b></li>
+        <li>Out hue to <b class="bad">-20 points</b></li>
+      </ul>
+      <button class="btn" id="startBtn">▶ START</button>
+      <a class="back" href="play.html">← Back</a>
+    </div>
+  </div>
+
+  <!-- Game khatam hone par -->
+  <div class="overlay hidden" id="over">
+    <div class="card">
+      <div class="title small">TIME UP!</div>
+      <div class="final-label">Your Score</div>
+      <div class="final-score" id="finalScore">0</div>
+      <div class="note" id="finalNote"></div>
+      <button class="btn" id="againBtn">↻ PLAY AGAIN</button>
+      <a class="back" href="play.html">← Back to Games</a>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="score.js"></script>
+  <script src="fly-modi.js"></script>
+</body>
+</html>

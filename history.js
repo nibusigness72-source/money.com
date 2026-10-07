@@ -11,6 +11,7 @@
     'knife-hit':    { name: 'Knife Hit',    icon: '🔪', bg: '#b91c1c' },
     'stack-tower':  { name: 'Stack Tower',  icon: '🗼', bg: '#15803d' },
     'flip-ball':    { name: 'Flip Ball',    icon: '🏀', bg: '#c2410c' },
+    'fly-modi':     { name: 'Fly Modi',     icon: '🐦', bg: '#0e7490' },
     'fruit-cut':    { name: 'Fruit Cut',    icon: '🍉', bg: '#be185d' },
     'gem-blast':    { name: 'Gem Blast',    icon: '💎', bg: '#6d28d9' },
     'endless-ride': { name: 'Endless Ride', icon: '🚗', bg: '#1d4ed8' },
