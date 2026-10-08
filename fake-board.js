@@ -104,8 +104,7 @@
   var origRender = render;
   render = function (rows) {
     var n = Math.max(0, Math.min(10, FAKE.count | 0));
-    var total = (window.state && state.count) || (rows.length + n);   // Top 10 / 50 / 100 ginti wahi rahe
-    var merged = makeFakes(n, rows).concat(rows).slice(0, Math.max(total, n));
+var merged = makeFakes(n, rows).concat(rows);
     origRender(merged);
 
     var list = document.querySelectorAll('.list .row');
