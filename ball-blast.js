@@ -7,7 +7,7 @@
   var CONFIG = {
     TIME: 60,            // game kitne second ka
     POP_POINTS: 1,       // ek ball phootne par point
-    FALL_POINTS: 0,      // ek ball latak kar girne par point (phootne se zyada)
+    FALL_POINTS: 0.5,      // ek ball latak kar girne par point (phootne se zyada)
     SCORE_CAP: 1000,     // ek game ka sabse zyada score jo save hoga (Firebase rule ke andar)
     START_ROWS: 9,       // shuru me kitni line ball
     MIN_ROWS: 8,         // jab ball kam ho jayein to upar se nayi line aati hai, itni line hamesha rahengi
