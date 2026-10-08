@@ -15,7 +15,7 @@
   // ===== YAHAN SE BADLO: kitne rank tak inaam milega =====
   // 3 = sirf Rank 1, 2, 3 ko inaam (baaki ko "-" dikhega, pencil bhi nahi)
   // 5 = Rank 1 se 5 tak | 10 = Rank 1 se 10 tak   (zyada se zyada 10, Rules mein bhi 10 tak hi hai)
-  var PRIZE_RANKS = 3;
+  var PRIZE_RANKS = 10;
   // ======================================================
   var KIND = { daily: 'day', weekly: 'week', monthly: 'month' };
   var IST = 5.5 * 3600 * 1000, CUT = 8 * 3600 * 1000;
