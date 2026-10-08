@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Arrow Escape - PLAY&amp;WIN</title>
+  <link rel="stylesheet" href="arrow-escape.css">
+</head>
+<body>
+
+  <div class="app">
+
+    <header class="top">
+      <a href="play.html" class="back">←</a>
+      <h1 id="title">Stage 1 / 4</h1>
+      <span class="chip">⭐ <b id="totalPoints">0</b></span>
+    </header>
+
+    <div class="drops" id="drops"></div>
+
+    <section class="hud">
+      <div class="box"><span>Score</span><b id="score">0</b></div>
+      <div class="box"><span>Time</span><b id="timeLeft">60</b></div>
+      <div class="box"><span>Teer</span><b id="left">10</b></div>
+    </section>
+
+    <section class="board">
+      <canvas id="game"></canvas>
+      <div class="wait" id="wait">
+        <div class="num" id="waitNum">3</div>
+        <div class="msg">Teer takra gaya! Ruko...</div>
+      </div>
+    </section>
+
+    <div class="hint" id="hint">Teer par TAP karo, wo bahar nikal jayega</div>
+
+  </div>
+
+  <!-- Result -->
+  <div class="overlay" id="overlay">
+    <div class="result">
+      <h2 id="resultTitle"></h2>
+      <p id="resultText"></p>
+      <button class="gold-btn" id="againBtn">Play Again</button>
+      <a href="play.html" class="back-link">Wapas jao</a>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="score.js"></script>
+  <script src="arrow-sound.js"></script>
+  <script src="arrow-escape.js"></script>
+</body>
+</html>
