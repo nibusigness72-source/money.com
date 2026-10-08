@@ -3,7 +3,7 @@
 // Har stage mein teer milkar ek alag tasveer banate hain (1, 5, M, heart, star ...)
 
 var TOTAL_TIME = 60;    // kul samay (second)
-var WAIT_TIME = 3;      // teer takraya to kitne second ruko
+var WAIT_TIME = 5;      // teer takraya to kitne second ruko
 var PTS = 2;            // har teer ke point
 
 // Har stage: kitne teer, aur ek khane (cell) ki chaudai (screen ki chaudai ka hissa)
