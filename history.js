@@ -18,7 +18,8 @@
     'endless-ride': { name: 'Endless Ride', icon: '🚗', bg: '#1d4ed8' },
     'memory-match': { name: 'Memory Match', icon: '🃏', bg: '#7c3aed' },
     'arrow-escape':  { name: 'Arrow Escape',  icon: '🏹', bg: '#b45309' },
-    'target-hit':   { name: 'Target Hit',   icon: '🎯', bg: '#b91c1c' }
+    'ball-blast':  { name: 'Ball Blast',  icon: '🔮', bg: '#7c3aed' },
+    'target-hit':   { name: 'Target Hit',   icon: '🎯', bg: '#b91c1c' },
   };
   var REF = { name: 'Referral Reward', icon: '👥', bg: '#0e7490' };
 
