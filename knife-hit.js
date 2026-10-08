@@ -11,9 +11,9 @@ var PEN = 0.7;           // phal ka kitna hissa lakdi ke andar jata hai
 var STAGES = [
   { knives: 7,  pre: 2, pts: 6, min: 1.4, max: 2.4, stop: 0.15, hue: 0 },
   { knives: 10, pre: 3, pts: 6, min: 1.8, max: 3.0, stop: 0.20, hue: -8 },
-  { knives: 12, pre: 4, pts: 6, min: 2.2, max: 3.6, stop: 0.25, hue: 8 },
-  { knives: 14, pre: 5, pts: 6, min: 2.6, max: 4.2, stop: 0.30, hue: -14 },
-  { knives: 22, pre: 6, pts: 6, min: 3.0, max: 4.8, stop: 0.30, hue: 14 }
+  { knives: 12, pre: 4, pts: 7, min: 2.2, max: 3.6, stop: 0.25, hue: 8 },
+  { knives: 14, pre: 5, pts: 7, min: 2.6, max: 4.2, stop: 0.30, hue: -14 },
+  { knives: 22, pre: 6, pts: 7, min: 3.0, max: 4.8, stop: 0.30, hue: 14 }
 ];
 
 var canvas = document.getElementById('game');

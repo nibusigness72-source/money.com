@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Block Blast - PLAY&amp;WIN</title>
+  <link rel="stylesheet" href="block-blast.css">
+</head>
+<body>
+
+  <canvas id="game"></canvas>
+
+  <!-- Shuru wali screen -->
+  <div class="overlay" id="menu">
+    <div class="card">
+      <div class="title">BLOCK BLAST</div>
+      <ul class="rules">
+        <li>⏱ Time: <b>1 minute</b></li>
+        <li>Neeche ke <b>3 block</b> ko ungli se pakdo aur board par <b>kahin bhi</b> chhodo</li>
+        <li>Poori line ya column bhar jaye to <b>kat jaati hai</b>, jitne block kate utne <b class="good">points</b></li>
+        <li>Lagatar line todo: <b class="good">2x, 3x...</b> combo</li>
+        <li>Koi block fit na ho to board <b class="bad">3 second</b> me khud saaf ho jaata hai</li>
+      </ul>
+      <button class="btn" id="startBtn">▶ START</button>
+      <a class="back" href="play.html">← Back</a>
+    </div>
+  </div>
+
+  <!-- Game khatam hone par -->
+  <div class="overlay hidden" id="over">
+    <div class="card">
+      <div class="title small">TIME UP!</div>
+      <div class="final-label">Your Score</div>
+      <div class="final-score" id="finalScore">0</div>
+      <div class="note" id="finalNote"></div>
+      <button class="btn" id="againBtn">↻ PLAY AGAIN</button>
+      <a class="back" href="play.html">← Back to Games</a>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="score.js"></script>
+  <script src="block-sound.js"></script>
+  <script src="block-blast.js"></script>
+</body>
+</html>

@@ -13,6 +13,7 @@
     'flip-ball':    { name: 'Flip Ball',    icon: '🏀', bg: '#c2410c' },
     'fly-modi':     { name: 'Fly Modi',     icon: '🐦', bg: '#0e7490' },
     'fruit-cut':    { name: 'Fruit Cut',    icon: '🍉', bg: '#be185d' },
+    'block-blast':  { name: 'Block Blast',  icon: '🟦', bg: '#1d4ed8' },
     'gem-blast':    { name: 'Gem Blast',    icon: '💎', bg: '#6d28d9' },
     'endless-ride': { name: 'Endless Ride', icon: '🚗', bg: '#1d4ed8' },
     'memory-match': { name: 'Memory Match', icon: '🃏', bg: '#7c3aed' },
