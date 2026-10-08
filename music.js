@@ -14,7 +14,7 @@
   // Play Again wali screen ka gaana. Nahi chahiye to khali rakho: ''
   var END_SONG = 'song1.mp3';
 
-  var VOLUME = 0.4;      // awaaz: 0 se 1 tak
+  var VOLUME = 1;      // awaaz: 0 se 1 tak
   // =================================================================
 
   var audio = new Audio();
