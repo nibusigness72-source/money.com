@@ -335,7 +335,7 @@
       streak++;
       misses = 0;
       var mult = CONFIG.COMBO_MULTIPLY ? Math.min(CONFIG.COMBO_MAX, streak) : 1;
-      var pts =(n-1)* mult;
+      var pts =(n+2)* mult;
       score += pts;
       sfx('clear', lines, streak);
       shake = 0.12 + Math.min(3, lines) * 0.05;
