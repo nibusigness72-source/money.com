@@ -1,0 +1,256 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #1b1450;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(4, 12, 40, 0.72);
+  z-index: 10;
+  padding: 16px;
+}
+
+.overlay.hidden { display: none; }
+
+.card {
+  width: 100%;
+  max-width: 340px;
+  background: #0f1b47;
+  border: 2px solid #22d3ee;
+  border-radius: 18px;
+  padding: 22px 18px;
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 0 24px rgba(34, 211, 238, 0.35);
+}
+
+.title {
+  font-size: 34px;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #facc15;
+  text-shadow: 0 3px 0 #7c5a00;
+  margin-bottom: 14px;
+}
+
+.title.small { font-size: 28px; }
+
+.rules {
+  list-style: none;
+  text-align: left;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #dbe5ff;
+  margin-bottom: 18px;
+}
+
+.rules li {
+  padding: 6px 0;
+  border-bottom: 1px solid #1f3a8a;
+}
+
+.rules li:last-child { border-bottom: none; }
+.good { color: #4ade80; }
+.bad { color: #f87171; }
+
+.btn {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  padding: 14px 0;
+  background: #facc15;
+  color: #222;
+  font-size: 18px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.btn:active { transform: scale(0.97); }
+
+.back {
+  display: inline-block;
+  margin-top: 14px;
+  color: #9fb0d9;
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.final-label { font-size: 13px; color: #9fb0d9; }
+
+.final-score {
+  font-size: 64px;
+  font-weight: 900;
+  color: #fff;
+  line-height: 1.1;
+  margin: 4px 0 8px;
+}
+
+.note {
+  min-height: 18px;
+  font-size: 13px;
+  color: #9fb0d9;
+  margin-bottom: 14px;
+}
+
+/* ================= Math Quiz ka khel ================= */
+body {
+  background: radial-gradient(circle at 20% 10%, #4b2fb5 0%, #241a73 45%, #130d44 100%);
+  color: #fff;
+}
+
+.app {
+  max-width: 480px;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0 auto;
+  padding: 14px 14px 22px;
+  display: flex;
+  flex-direction: column;
+}
+
+.top {
+  display: flex;
+  align-items: stretch;
+  justify-content: space-between;
+  gap: 10px;
+  padding-right: 48px;           /* 🔊 button ke liye jagah */
+}
+
+.pill {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.12);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  border-radius: 16px;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.pill small {
+  display: block;
+  font-size: 12px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: #c9c2ff;
+  margin-bottom: 2px;
+}
+
+.pill b {
+  font-size: 28px;
+  font-weight: 900;
+}
+
+.pill.score b { color: #ffe14d; }
+.pill.low b { color: #ff8a8a; }
+
+.qbar {
+  height: 10px;
+  margin: 14px 0 0;
+  background: rgba(0, 0, 0, 0.35);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.qbar i {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #ff3b2f, #ffc21a, #3ddc5a);
+  border-radius: 10px;
+}
+
+.qwrap {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 0;
+}
+
+.qlabel {
+  font-size: 14px;
+  letter-spacing: 2px;
+  color: #c9c2ff;
+  margin-bottom: 10px;
+}
+
+.question {
+  font-size: clamp(44px, 14vw, 72px);
+  font-weight: 900;
+  color: #fff;
+  text-shadow: 0 4px 0 rgba(0, 0, 0, 0.35);
+  letter-spacing: 2px;
+  white-space: nowrap;
+}
+
+.question.pop { animation: pop 0.22s ease-out; }
+
+@keyframes pop {
+  0% { transform: scale(0.6); opacity: 0; }
+  70% { transform: scale(1.08); opacity: 1; }
+  100% { transform: scale(1); }
+}
+
+.opts {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.opt {
+  border: 0;
+  border-radius: 20px;
+  padding: 22px 8px;
+  font-size: 30px;
+  font-weight: 900;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3);
+  transition: transform 0.08s;
+}
+
+.opt:active { transform: translateY(4px); box-shadow: 0 2px 0 rgba(0, 0, 0, 0.3); }
+.opt:nth-child(1) { background: linear-gradient(180deg, #3aa0ff, #1d6fd6); }
+.opt:nth-child(2) { background: linear-gradient(180deg, #b36bff, #7b34d8); }
+.opt:nth-child(3) { background: linear-gradient(180deg, #ff6fb1, #d63a82); }
+.opt:nth-child(4) { background: linear-gradient(180deg, #ffae1a, #e07a00); }
+.opt.right { background: linear-gradient(180deg, #4ae27a, #1fa84d) !important; }
+.opt.wrong { background: linear-gradient(180deg, #ff6a5a, #c92b1e) !important; }
+.opts.locked .opt { pointer-events: none; }
+
+.flash {
+  position: fixed;
+  left: 0; right: 0;
+  top: 26%;
+  text-align: center;
+  font-size: 40px;
+  font-weight: 900;
+  pointer-events: none;
+  opacity: 0;
+  text-shadow: 0 3px 0 rgba(0, 0, 0, 0.4);
+}
+
+.flash.show { animation: floatUp 0.7s ease-out; }
+
+@keyframes floatUp {
+  0% { opacity: 0; transform: translateY(20px) scale(0.7); }
+  25% { opacity: 1; transform: translateY(0) scale(1.1); }
+  100% { opacity: 0; transform: translateY(-40px) scale(1); }
+}

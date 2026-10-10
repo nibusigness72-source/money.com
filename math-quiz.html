@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Math Quiz - PLAY&amp;WIN</title>
+  <link rel="stylesheet" href="math-quiz.css">
+</head>
+<body>
+
+  <div class="app">
+    <div class="top">
+      <div class="pill"><small>Time</small><b id="time">2:00</b></div>
+      <div class="pill score"><small>Total Score</small><b id="score">0</b></div>
+    </div>
+    <div class="qbar"><i id="qbar"></i></div>
+
+    <div class="qwrap">
+      <div class="qlabel">SAHI JAWAB CHUNO</div>
+      <div class="question" id="question">? + ?</div>
+    </div>
+
+    <div class="opts" id="opts">
+      <button class="opt" type="button"></button>
+      <button class="opt" type="button"></button>
+      <button class="opt" type="button"></button>
+      <button class="opt" type="button"></button>
+    </div>
+  </div>
+  <div class="flash" id="flash"></div>
+
+  <!-- Shuru wali screen -->
+  <div class="overlay" id="menu">
+    <div class="card">
+      <div class="title">MATH QUIZ</div>
+      <ul class="rules">
+        <li>⏱ Time: <b>2 minute</b></li>
+        <li>Upar sawal aayega (jaise <b>69 + 79</b>), neeche 4 jawab me se <b>sahi</b> chuno</li>
+        <li>Sahi jawab = <b class="good">+25 points</b>. Galat par koi point nahi</li>
+        <li>Har sawal sirf <b>3 second</b> ka, phir khud badal jaata hai</li>
+        <li>Plus, minus, guna aur bhaag, sab aayenge</li>
+      </ul>
+      <button class="btn" id="startBtn">▶ START</button>
+      <a class="back" href="play.html">← Back</a>
+    </div>
+  </div>
+
+  <!-- Game khatam hone par -->
+  <div class="overlay hidden" id="over">
+    <div class="card">
+      <div class="title small">TIME UP!</div>
+      <div class="final-label">Your Score</div>
+      <div class="final-score" id="finalScore">0</div>
+      <div class="note" id="finalStats"></div>
+      <div class="note" id="finalNote"></div>
+      <button class="btn" id="againBtn">↻ PLAY AGAIN</button>
+      <a class="back" href="play.html">← Back to Games</a>
+    </div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+  <script src="score.js"></script>
+  <script src="math-sound.js"></script>
+  <script src="math-quiz.js"></script>
+</body>
+</html>

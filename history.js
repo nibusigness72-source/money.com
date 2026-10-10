@@ -20,6 +20,7 @@
     'arrow-escape':  { name: 'Arrow Escape',  icon: '🏹', bg: '#b45309' },
     'ball-blast':  { name: 'Ball Blast',  icon: '🔮', bg: '#7c3aed' },
     'target-hit':   { name: 'Target Hit',   icon: '🎯', bg: '#b91c1c' },
+    'math-quiz':  { name: 'Math Quiz',  icon: '➕', bg: '#2563eb' },
   };
   var REF = { name: 'Referral Reward', icon: '👥', bg: '#0e7490' };
 
