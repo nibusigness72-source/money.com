@@ -47,6 +47,24 @@ body {
   font-weight: 700;
 }
 
+/* Tournament Announcement */
+.announce-bar {
+  background: linear-gradient(90deg, #0b5fd6, #1d8cf8);
+  border: 1px solid var(--cyan);
+  box-shadow: 0 0 10px rgba(34, 211, 238, 0.45);
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  text-align: center;
+  font-size: 13.5px;
+  color: #fff;
+}
+
+.announce-bar b {
+  font-weight: 800;
+  color: var(--yellow);
+}
+
 /* Period Tabs */
 .period-row {
   display: flex;
